@@ -7,89 +7,95 @@ using TMPro;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("Rect Transforms")]
-    [SerializeField]
-    private RectTransform LeftArrowPointer;
-    [SerializeField]
-    private RectTransform RightArrowPointer;
 
     [Header("Transforms")]
-    [SerializeField]
-    private Transform Timer_Transform;
-    [SerializeField]
-    private Transform Roulette_OuterCircle;
-    [SerializeField]
-    private Transform Roulette_InnerCircle;
-    [SerializeField]
-    private Transform Roulette_BallContainer;
-    [SerializeField]
-    private Transform Ball_Transform;
+    // [SerializeField]
+    // private Transform Timer_Transform;
+    [SerializeField] private Transform Roulette_NumberCircle;
+    // [SerializeField]
+    // private Transform Roulette_InnerCircle;
+    [SerializeField] private Transform Roulette_BallContainer;
+    [SerializeField] private Transform Ball_Transform;
 
     [Header("TMP_Texts")]
-    [SerializeField]
-    private TMP_Text Timer_Text;
-    [SerializeField]
-    private TMP_Text winNumber_Text;
+    // [SerializeField]
+    // private TMP_Text Timer_Text;
+    [SerializeField] private TMP_Text balanceText;
+    [SerializeField] private TMP_Text totalBetText;
+    [SerializeField] private TMP_Text totalWiningText;
+    [SerializeField] private TMP_Text RedWinNumberHistoryText;
+    [SerializeField] private TMP_Text GreenWinNumberHistoryText;
+    [SerializeField] private TMP_Text BlackWinNumberHistoryText;
 
     [Header("Buttons")]
-    [SerializeField]
-    private Button GameExit_Button;
+    // [SerializeField]
+    // private Button GameExit_Button;
+    [SerializeField] private Button DoubleBetButton;
+    [SerializeField] private Button UndoBetButton;
+    [SerializeField] private Button ClearBetsButton;
+    [SerializeField] private Button RebetFromLastBetButton;
+    [SerializeField] private Button PaytableButton;
+    [SerializeField] private Button PaytableInsideButton;
+    [SerializeField] private Button PaytableCloseButton;
+    [SerializeField] private Button RaceTrackButton;
+    [SerializeField] private Button StatisticsButton;
+    [SerializeField] private Button FavouriteBetButton;
+    [SerializeField] private List<Button> DisableButtons_DuringSpin;
 
     [Header("GameObjects")]
-    [SerializeField]
-    private GameObject StartBettingPopup;
-    [SerializeField]
-    private GameObject StopBettingPopup;
-    [SerializeField]
-    private GameObject SpinPanel_Object;
-    [SerializeField]
-    private GameObject MainPopup_Object;
-    [SerializeField]
-    private GameObject winNumber_Object;
+    // [SerializeField]
+    // private GameObject StartBettingPopup;
+    // [SerializeField]
+    // private GameObject StopBettingPopup;
+    // [SerializeField]
+    // private GameObject SpinPanel_Object;
+    [SerializeField] private GameObject MainPopup_Object;
+    [SerializeField] private GameObject PaytablePopup_Object;
+    [SerializeField] private GameObject RaceTrackPopup_Object;
+    [SerializeField] private GameObject StatisticsPopup_Object;
+    [SerializeField] private GameObject FavouriteBetPopup_Object;
+    // [SerializeField]
+    // private GameObject winNumber_Object;
+
+    [Header("Win Popup")]
+    [SerializeField] private GameObject WinNumberPopup_Object;
+    [SerializeField] private GameObject RedWinNumberPopup_Object;
+    [SerializeField] private GameObject BlackWinNumberPopup_Object;
+    [SerializeField] private GameObject GreenWinNumberPopup_Object;
+    [SerializeField] private TMP_Text WinNumberPopup_Text;
+    internal bool isWinPopupActive = false;
 
     [Header("Lists & Arrays")]
-    [SerializeField]
-    private Transform[] BallStopPoint;
-    [SerializeField]
-    private List<string> NumberCode;
-    [SerializeField]
-    private List<int> PreviousNumbers;
-    [SerializeField]
-    private List<TMP_Text> Previous_Text;
-    [SerializeField]
-    private List<Image> Previous_Image;
+    [SerializeField] private Transform[] BallStopPoint;
+    [SerializeField] private List<string> NumberCode;
+    [SerializeField] private List<int> PreviousNumbers;
+    [SerializeField] private List<TMP_Text> Previous_Text;
+    [SerializeField] private List<Image> Previous_Image;
 
     [Header("Colors")]
-    [SerializeField]
-    private Color blackColor;
-    [SerializeField]
-    private Color redColor;
-    [SerializeField]
-    private Color greenColor;
+    [SerializeField] private Color blackColor;
+    [SerializeField] private Color redColor;
+    [SerializeField] private Color greenColor;
 
     [Header("Managers")]
-    [SerializeField]
-    private RouletteController _rouletteManager;
-    [SerializeField]
-    private BallScript BallManager;
+    [SerializeField] private RouletteController rouletteManager;
+    [SerializeField] private SocketIOManager socketManager;
+    [SerializeField] private AudioController audioController;
+    [SerializeField] private BallScript BallManager;
+    [SerializeField] private BetManager betManager;
 
-    [SerializeField]
-    private int Timer = 30;
-    [SerializeField]
-    private int numberAnnounced = 0;
-    [SerializeField]
-    private Vector3 initialBallPosition;
-    [SerializeField]
-    private Image winNumber_Image;
+    [Header("Other Stuff")]
+    [SerializeField] private int Timer = 30;
+    [SerializeField] private int numberAnnounced = 0;
+    [SerializeField] private Vector3 initialBallPosition;
+    [SerializeField] private Image winNumber_Image;
 
     private Tweener ballMovement = null;
     private Tweener OuterRouletteMovement = null;
     private Tweener InnerRouletteMovement = null;
 
-    [SerializeField]private GameObject Stopper_pref;
+    [SerializeField] private GameObject Stopper_pref;
     private GameObject Stopper;
-
-    [SerializeField] private AudioController audioController;
 
     private void Awake()
     {
@@ -98,147 +104,196 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
-        AnimateArrows();
-        if (GameExit_Button) GameExit_Button.onClick.RemoveAllListeners();
-        if (GameExit_Button) GameExit_Button.onClick.AddListener(CallOnExitFunction);
-        Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
+        // if (GameExit_Button) GameExit_Button.onClick.RemoveAllListeners();
+        // if (GameExit_Button) GameExit_Button.onClick.AddListener(CallOnExitFunction);
+        // Application.ExternalCall("window.parent.postMessage", "OnEnter", "*");
+        if (DoubleBetButton) DoubleBetButton.onClick.RemoveAllListeners();
+        if (DoubleBetButton) DoubleBetButton.onClick.AddListener(() => betManager.DoubleBet());
+        if (UndoBetButton) UndoBetButton.onClick.RemoveAllListeners();
+        if (UndoBetButton) UndoBetButton.onClick.AddListener(() => betManager.UndoLastBet());
+        if (ClearBetsButton) ClearBetsButton.onClick.RemoveAllListeners();
+        if (ClearBetsButton) ClearBetsButton.onClick.AddListener(() => betManager.ClearAllBets());
+        if (RebetFromLastBetButton) RebetFromLastBetButton.onClick.RemoveAllListeners();
+        if (RebetFromLastBetButton) RebetFromLastBetButton.onClick.AddListener(() => betManager.Rebet());
+        if (PaytableButton) PaytableButton.onClick.RemoveAllListeners();
+        if (PaytableButton) PaytableButton.onClick.AddListener(() => TogglePopup(PaytablePopup_Object));
+        if (PaytableInsideButton) PaytableInsideButton.onClick.RemoveAllListeners();
+        if (PaytableInsideButton) PaytableInsideButton.onClick.AddListener(() => TogglePopup(PaytablePopup_Object));
+        if (PaytableCloseButton) PaytableCloseButton.onClick.RemoveAllListeners();
+        if (PaytableCloseButton) PaytableCloseButton.onClick.AddListener(() => ClosePopup(PaytablePopup_Object));
+        if (RaceTrackButton) RaceTrackButton.onClick.RemoveAllListeners();
+        if (RaceTrackButton) RaceTrackButton.onClick.AddListener(() => TogglePopup(RaceTrackPopup_Object));
+        if (StatisticsButton) StatisticsButton.onClick.RemoveAllListeners();
+        if (StatisticsButton) StatisticsButton.onClick.AddListener(() => TogglePopup(StatisticsPopup_Object));
+        if (FavouriteBetButton) FavouriteBetButton.onClick.RemoveAllListeners();
+        if (FavouriteBetButton) FavouriteBetButton.onClick.AddListener(() => TogglePopup(FavouriteBetPopup_Object));
     }
 
 
-    private void CallOnExitFunction()
+    // private void CallOnExitFunction()
+    // {
+    //     Application.ExternalCall("window.parent.postMessage", "onExit", "*");
+    // }
+
+
+
+    private void TogglePopup(GameObject popup)
     {
-        Application.ExternalCall("window.parent.postMessage", "onExit", "*");
-    }
-
-    internal void StartSpinning()
-    {
-        audioController.PlayWLAudio("spin");
-        if (winNumber_Object) winNumber_Object.SetActive(false);                                                                                                                                                                                                                
-        if (Ball_Transform) Ball_Transform.SetParent(Roulette_BallContainer);
-        if (Ball_Transform) Ball_Transform.localPosition = initialBallPosition;
-        if (Roulette_OuterCircle) Roulette_OuterCircle.localEulerAngles = new Vector3(0, 0, 359);
-        if (Roulette_OuterCircle) OuterRouletteMovement = Roulette_OuterCircle.DORotate(new Vector3(0, 0, 0), 2, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
-        // if (Roulette_InnerCircle) Roulette_InnerCircle.localEulerAngles = new Vector3(0, 0, 0);
-        // if (Roulette_InnerCircle) InnerRouletteMovement = Roulette_InnerCircle.DORotate(new Vector3(0, 0, 359), 2, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
-        //if (Roulette_BallContainer) Roulette_BallContainer.localEulerAngles = new Vector3(0, 0, 0);
-        if (Roulette_BallContainer) ballMovement = Roulette_BallContainer.DORotate(new Vector3(0, 0, 359), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
-     //   if (SpinPanel_Object) SpinPanel_Object.SetActive(true);
-
-        numberAnnounced = Random.Range(0, 37);
-        Stopper=Instantiate(Stopper_pref, BallStopPoint[numberAnnounced]);
-        Stopper.transform.localPosition = Vector2.zero;
-      //  StartCoroutine(BallRevolution(numberAnnounced));
-    }
-
-    private void AnimateArrows()
-    {
-        if (LeftArrowPointer) LeftArrowPointer.DOLocalMoveX(LeftArrowPointer.anchoredPosition.x + 25, 0.5f).SetLoops(-1, LoopType.Yoyo);
-        if (RightArrowPointer) RightArrowPointer.DOLocalMoveX(RightArrowPointer.anchoredPosition.x - 25, 0.5f).SetLoops(-1, LoopType.Yoyo);
-        if (Timer_Transform) Timer_Transform.localEulerAngles = new Vector3(0, 0, 359);
-        if (Timer_Transform) Timer_Transform.DORotate(new Vector3(0, 0, 0), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
-
-        StartCoroutine(StartBetting());
-    }
-
-    private IEnumerator BallRevolution(int number)
-    {
-        yield return new WaitForSecondsRealtime(5);
-
-        while (Ball_Transform.localPosition.x < -167 && Ball_Transform.localPosition.y > 99) 
-        {
-            Ball_Transform.localPosition = new Vector2(Ball_Transform.localPosition.x + 5f, Ball_Transform.localPosition.y - 3f);
-            ballMovement.timeScale -= 0.05f;
-            yield return new WaitForSecondsRealtime(0.1f);
-        }
-        BallManager.parent_Transform = BallStopPoint[number];
-   
-        Stopper.GetComponent<BoxCollider2D>().enabled = true;
-        print("triggered");
-    }
-
-    private void UpdatePreviousNumbers(int addition)
-    {
-        PreviousNumbers.RemoveAt(PreviousNumbers.Count - 1);
-        PreviousNumbers.Insert(0, addition);
-        for (int i = 0; i < PreviousNumbers.Count; i++)
-        {
-            if (Previous_Text[i]) Previous_Text[i].text = PreviousNumbers[i].ToString();
-            if (NumberCode[PreviousNumbers[i]] == "black")
-            {
-                if (Previous_Image[i]) Previous_Image[i].color = blackColor;
-            }
-            else if (NumberCode[PreviousNumbers[i]] == "red")
-            {
-                if (Previous_Image[i]) Previous_Image[i].color = redColor;
-            }
-            else
-            {
-                if (Previous_Image[i]) Previous_Image[i].color = greenColor;
-            }
-        }
-    }
-
-    internal IEnumerator StopAtNumber()
-    {
-        audioController.StopWLAaudio();
         audioController.PlayButtonAudio();
-        if (winNumber_Text) winNumber_Text.text = numberAnnounced.ToString();
-
-        if (NumberCode[numberAnnounced] == "black")
+        if (popup.activeSelf)
         {
-            if (winNumber_Image) winNumber_Image.color = blackColor;
+            popup.SetActive(false);
+            // MainPopup_Object.SetActive(false);
+            return;
         }
-        else if (NumberCode[numberAnnounced] == "red")
+        if (!popup.activeSelf)
         {
-            if (winNumber_Image) winNumber_Image.color = redColor;
+            popup.SetActive(true);
+            // MainPopup_Object.SetActive(true);
+            return;
         }
-        else
-        {
-            if (winNumber_Image) winNumber_Image.color = greenColor;
-        }
-
-        if (winNumber_Object) winNumber_Object.SetActive(true);
-
-        UpdatePreviousNumbers(numberAnnounced);
-
-        yield return new WaitForSecondsRealtime(3);
-
-        Stopper.GetComponent<BoxCollider2D>().enabled = false;
-        Destroy(Stopper);
-        Stopper = null;
-
-        StartCoroutine(StartBetting());
-        if (SpinPanel_Object) SpinPanel_Object.SetActive(false);
-        OuterRouletteMovement.Pause();
-        OuterRouletteMovement.Kill();
-        OuterRouletteMovement = null;
-        InnerRouletteMovement.Pause();
-        InnerRouletteMovement.Kill();
-        InnerRouletteMovement = null;
-        ballMovement.Pause();
-        ballMovement.Kill();
-        ballMovement = null;
-        audioController.StopButtonAudio();
     }
 
-    private IEnumerator StartBetting()
+    private void ClosePopup(GameObject popup)
     {
-        _rouletteManager.CancelBet();
-        if (MainPopup_Object) MainPopup_Object.SetActive(true);
-        if (StartBettingPopup) StartBettingPopup.SetActive(true);
-        yield return new WaitForSecondsRealtime(2);
-        if (StartBettingPopup) StartBettingPopup.SetActive(false);
-        if (MainPopup_Object) MainPopup_Object.SetActive(false);
-        for (int i = Timer; i >= 0; i--)
-        {
-            if (Timer_Text) Timer_Text.text = i.ToString();
-            yield return new WaitForSecondsRealtime(1);
-        }
-        if (StopBettingPopup) StopBettingPopup.SetActive(true);
-      //  if (MainPopup_Object) MainPopup_Object.SetActive(true);
-        yield return new WaitForSecondsRealtime(2);
-        StartSpinning();
-        if (StopBettingPopup) StopBettingPopup.SetActive(false);
-        if (MainPopup_Object) MainPopup_Object.SetActive(false);
+        audioController.PlayButtonAudio();
+        popup.SetActive(false);
     }
+    internal string GetHoverText(string key)
+    {
+        switch (key)
+        {
+            case "paytable":
+                if (PaytablePopup_Object.activeSelf)
+                {
+                    return "Close paytable";
+                }
+                return "Open paytable";
+            case "racetrack":
+                if (RaceTrackPopup_Object.activeSelf)
+                {
+                    return "Close racetrack";
+                }
+                return "Open racetrack";
+            case "statistics":
+                if (StatisticsPopup_Object.activeSelf)
+                {
+                    return "Close statistics";
+                }
+                return "Open statistics";
+            case "favouriteBet":
+                if (FavouriteBetPopup_Object.activeSelf)
+                {
+                    return "Close favourite bets";
+                }
+                return "Open favourite bets";
+            case "doublebet":
+                return "Double all bets";
+            case "undobet":
+                return "Undo last bet";
+            case "clearbets":
+                return "Clear all bets";
+            case "rebetfromlastbet":
+                return "Rebet from previous round";
+            default:
+                return "";
+        }
+    }
+    internal void InitializeUIData()
+    {
+        balanceText.text = socketManager.playerdata.balance.ToString("F2");
+    }
+    internal IEnumerator UpdateResultUI()
+    {
+        totalBetText.text = socketManager.resultData.payload.totalBetAmount.ToString("F2");
+        yield return new WaitForSeconds(1f);
+        UpdateUI();
+        Debug.Log("UI Updated");
+    }
+    private void UpdateBetUI(int totalBet)
+    {
+        totalBetText.text = totalBet.ToString("F2");
+    }
+    private void UpdateUI()
+    {
+        balanceText.text = socketManager.resultData.player.balance.ToString("F2");
+        totalWiningText.text = socketManager.resultData.payload.winAmount.ToString("F2");
+    }
+    internal void UpdateWinNumberHistoryUI(string color, int number)
+    {
+        string num = number.ToString();
+
+        string blank = "";
+        string redLine = blank;
+        string greenLine = blank;
+        string blackLine = blank;
+
+        switch (color.ToLower())
+        {
+            case "red":
+                redLine = num;
+                break;
+            case "green":
+                greenLine = num;
+                break;
+            case "black":
+                blackLine = num;
+                break;
+        }
+
+        RedWinNumberHistoryText.text = redLine + "\n" + RedWinNumberHistoryText.text;
+        GreenWinNumberHistoryText.text = greenLine + "\n" + GreenWinNumberHistoryText.text;
+        BlackWinNumberHistoryText.text = blackLine + "\n" + BlackWinNumberHistoryText.text;
+    }
+
+    internal void ShowWinning(string color, int number)
+    {
+        isWinPopupActive = true;
+        RedWinNumberPopup_Object.SetActive(false);
+        BlackWinNumberPopup_Object.SetActive(false);
+        GreenWinNumberPopup_Object.SetActive(false);
+
+        WinNumberPopup_Text.text = number.ToString();
+
+        if (color.ToLower() == "red")
+        {
+            RedWinNumberPopup_Object.SetActive(true);
+        }
+        else if (color.ToLower() == "black")
+        {
+            BlackWinNumberPopup_Object.SetActive(true);
+        }
+        else if (color.ToLower() == "green")
+        {
+            GreenWinNumberPopup_Object.SetActive(true);
+        }
+
+        WinNumberPopup_Object.SetActive(true);
+
+        RectTransform popup = WinNumberPopup_Object.GetComponent<RectTransform>();
+
+        popup.DOKill();
+        popup.localScale = Vector3.zero;
+        Sequence seq = DOTween.Sequence();
+        seq.Append(popup.DOScale(1f, 0.35f).SetEase(Ease.OutBack));
+
+        seq.AppendInterval(3f);
+
+        seq.Append(popup.DOScale(0f, 0.3f).SetEase(Ease.InBack));
+        seq.OnComplete(() =>
+        {
+            WinNumberPopup_Object.SetActive(false);
+            isWinPopupActive = false;
+        });
+        
+    }
+
+    internal void ToggleButtons(bool status)
+    {
+        foreach (Button btn in DisableButtons_DuringSpin)
+        {
+            btn.interactable = status;
+        }
+    }
+
 }

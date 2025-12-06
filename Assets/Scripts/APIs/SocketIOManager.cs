@@ -21,14 +21,11 @@ public class SocketIOManager : MonoBehaviour
   protected string SocketURI = null;
   protected string TestSocketURI = "http://localhost:5000/";
   protected string gameID = "SL-LLL";
-  // protected string gameID = "";
   private SocketManager manager;
   private const int maxReconnectionAttempts = 6;
   private readonly TimeSpan reconnectionDelay = TimeSpan.FromSeconds(10);
   private string myAuth = null;
   internal GameData initialData = null;
-  // internal UiData initUIData = null;
-  // internal Features features = null;
   internal Root resultData = null;
   internal Player playerdata = null;
   internal bool isResultdone = false;
@@ -166,7 +163,7 @@ public class SocketIOManager : MonoBehaviour
 
     if (hasEverConnected)
     {
-      // _uiManager.CheckAndClosePopups();
+      uiManager.CheckAndClosePopups();
     }
 
     isConnected = true;
@@ -181,7 +178,7 @@ public class SocketIOManager : MonoBehaviour
   {
     Debug.LogWarning("⚠️ Disconnected from server.");
     isConnected = false;
-    // _uiManager.DisconnectionPopup();
+    uiManager.DisconnectionPopup();
     ResetPingRoutine();
   } //Back2 end
 
@@ -247,7 +244,7 @@ public class SocketIOManager : MonoBehaviour
     {
       if (missedPongs == 0)
       {
-        // _uiManager.CheckAndClosePopups();
+        uiManager.CheckAndClosePopups();
       }
 
       // If waiting for pong, and timeout passed
@@ -255,7 +252,7 @@ public class SocketIOManager : MonoBehaviour
       {
         if (missedPongs == 2)
         {
-          // _uiManager.ReconnectionPopup();
+          uiManager.ReconnectionPopup();
         }
         missedPongs++;
         Debug.LogWarning($"⚠️ Pong missed #{missedPongs}/{MaxMissedPongs}");
@@ -264,7 +261,7 @@ public class SocketIOManager : MonoBehaviour
         {
           Debug.LogError("❌ Unable to connect to server — 5 consecutive pongs missed.");
           isConnected = false;
-          // _uiManager.DisconnectionPopup();
+          uiManager.DisconnectionPopup();
           yield break;
         }
       }
@@ -340,14 +337,11 @@ public class SocketIOManager : MonoBehaviour
       case "initData":
         {
           initialData = myData.gameData;
-          // initUIData = myData.uiData;
-          // features = myData.features;
 
           if (!SetInit)
           {
             SetInit = true;
             InitialiseUIData();
-            // slotBehaviour.SocketConnected = true;
           }
           else
           {
@@ -372,21 +366,20 @@ public class SocketIOManager : MonoBehaviour
 #if UNITY_WEBGL && !UNITY_EDITOR
           JSManager.SendCustomMessage("onExit");
 #endif
-          // exited = true;
           break;
         }
     }
   }
 
-    private void InitialiseUIData()
-    {
-      uiManager.InitializeUIData();
-      // _uiManager.InitialiseUIData(initUIData.paylines);
-  #if UNITY_WEBGL && !UNITY_EDITOR
+  private void InitialiseUIData()
+  {
+    uiManager.InitializeUIData();
+    uiManager.UpdateHotColdNumbers(initialData.hot_numbers,initialData.cold_numbers);
+#if UNITY_WEBGL && !UNITY_EDITOR
       JSManager.SendCustomMessage("OnEnter");
-  #endif
-      RaycastBlocker.SetActive(false);
-    }
+#endif
+    RaycastBlocker.SetActive(false);
+  }
 
   internal void AccumulateResult(List<BetPlacement> betPlacement)
   {
@@ -491,8 +484,8 @@ public class GameData
   public Bets bets { get; set; }
   public CompoundBets compound_bets { get; set; }
   public BetTypes bet_types { get; set; }
-  public List<object> hot_numbers { get; set; }
-  public List<object> cold_numbers { get; set; }
+  public List<HotNumber> hot_numbers { get; set; }
+  public List<ColdNumber> cold_numbers { get; set; }
 }
 
 [Serializable]

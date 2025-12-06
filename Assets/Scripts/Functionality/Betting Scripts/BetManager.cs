@@ -9,15 +9,14 @@ public class BetManager : MonoBehaviour
 {
     [SerializeField] private RectTransform chipRoot;
     [SerializeField] private ChipSelector chipSelector;
-
-    // keyed by betKey (eg "straight_up_7", "split_2_5", "red")
+    [SerializeField] private AudioController audioController;
+    [SerializeField] private RouletteController rouletteController;
     private Dictionary<string, List<GameObject>> placedChips = new Dictionary<string, List<GameObject>>();
-    private List<BetPlacement> betPlacement = new List<BetPlacement> { };
+    internal List<BetPlacement> betPlacement = new List<BetPlacement> { };
 
     [SerializeField]
     private float[] chipValues = { 0.10f, 0.50f, 1f, 2f, 5f, 10f, 25f, 50f, 100f, 500f, 1000f };
 
-    // total amount per betKey
     private Dictionary<string, float> amountOnBet = new Dictionary<string, float>();
 
     private List<BetAction> betHistory = new List<BetAction>();
@@ -26,7 +25,7 @@ public class BetManager : MonoBehaviour
     [System.Serializable]
     internal class BetAction
     {
-        internal string betKey;         // unique ID like "split_2_5" or "even"
+        internal string betKey;
         internal float chipValue;
         internal RectTransform anchor;
     }
@@ -39,7 +38,6 @@ public class BetManager : MonoBehaviour
         if (chipValue <= 0)
             return;
 
-        // build key (type + numbers). If numbers is empty -> just use type
         string key = BuildBetKey(betDef.betType, betDef.numbers);
 
         if (!amountOnBet.ContainsKey(key))
@@ -47,7 +45,6 @@ public class BetManager : MonoBehaviour
 
         amountOnBet[key] += chipValue;
 
-        // Store history
         betHistory.Add(new BetAction
         {
             betKey = key,
@@ -55,15 +52,15 @@ public class BetManager : MonoBehaviour
             anchor = betDef.chipAnchor
         });
 
-        // Rebuild visuals and backend entry
+        audioController.PlayChip();
+        rouletteController.betCount += chipValue;
+        rouletteController.UpdateBetandBalance();
         RebuildChipStack(key, betDef.chipAnchor);
         UpdateBetPlacementForKey(key);
     }
 
-    // Rebuild stack for a betKey. Will parse type & numbers from the key
     private void RebuildChipStack(string betKey, RectTransform anchor)
     {
-        // ensure list exists
         if (placedChips.ContainsKey(betKey))
         {
             foreach (var chip in placedChips[betKey])
@@ -112,7 +109,6 @@ public class BetManager : MonoBehaviour
             chipRT.DOScale(0.7f, 0.2f);
             chipRT.DORotate(new Vector3(0, 0, Random.Range(-7f, 7f)), 0.3f);
 
-            // optionally set visual label if prefab has text, etc.
             placedChips[betKey].Add(chip);
         }
     }
@@ -123,6 +119,7 @@ public class BetManager : MonoBehaviour
 
     internal void UndoLastBet()
     {
+        audioController.PlayUIButton();
         if (betHistory.Count == 0)
             return;
 
@@ -148,18 +145,18 @@ public class BetManager : MonoBehaviour
                 placedChips.Remove(key);
             }
 
-            // remove backend entries for this key
             RemoveBetPlacementForKey(key);
             return;
         }
-
-        // rebuild visuals & backend for this key
+        rouletteController.betCount -= last.chipValue;
+        rouletteController.UpdateBetandBalance();
         RebuildChipStack(key, last.anchor);
         UpdateBetPlacementForKey(key);
     }
 
     internal void DoubleBet()
     {
+        audioController.PlayUIButton();
         if (betHistory.Count == 0)
             return;
 
@@ -173,7 +170,8 @@ public class BetManager : MonoBehaviour
                 amountOnBet[a.betKey] = 0f;
 
             amountOnBet[a.betKey] += a.chipValue;
-
+            rouletteController.betCount += a.chipValue;
+            rouletteController.UpdateBetandBalance();
             betHistory.Add(new BetAction
             {
                 betKey = a.betKey,
@@ -182,7 +180,6 @@ public class BetManager : MonoBehaviour
             });
         }
 
-        // Rebuild all stacks
         var keys = amountOnBet.Keys.ToList();
         foreach (var key in keys)
         {
@@ -197,45 +194,24 @@ public class BetManager : MonoBehaviour
 
     internal void ClearAllBets()
     {
-        foreach (var kvp in placedChips)
-        {
-            foreach (var chip in kvp.Value)
-                Destroy(chip);
-        }
-
-        placedChips.Clear();
-        amountOnBet.Clear();
-        betHistory.Clear();
-        betPlacement.Clear();
-
+        audioController.PlayUIButton();
+        ClearCurrentBetsVisualOnly();
         Debug.Log("All bets cleared.");
     }
 
+
     internal void Rebet()
     {
-        if (lastRoundBets.Count == 0) return;
+        audioController.PlayUIButton();
+        if (lastRoundBets.Count == 0)
+        {
+            Debug.LogWarning("No previous round bets to rebet.");
+            return;
+        }
 
         ClearCurrentBetsVisualOnly();
 
-        foreach (var a in lastRoundBets)
-        {
-            if (!amountOnBet.ContainsKey(a.betKey))
-                amountOnBet[a.betKey] = 0f;
-
-            amountOnBet[a.betKey] += a.chipValue;
-        }
-
-        HashSet<string> keys = new HashSet<string>(amountOnBet.Keys);
-
-        foreach (string key in keys)
-        {
-            RectTransform anchor = FindAnchorFromHistoryForRebet(key);
-            if (anchor != null)
-            {
-                RebuildChipStack(key, anchor);
-                UpdateBetPlacementForKey(key);
-            }
-        }
+        betHistory.Clear();
 
         foreach (var a in lastRoundBets)
         {
@@ -245,14 +221,31 @@ public class BetManager : MonoBehaviour
                 chipValue = a.chipValue,
                 anchor = a.anchor
             });
+
+            if (!amountOnBet.ContainsKey(a.betKey))
+                amountOnBet[a.betKey] = 0f;
+
+            amountOnBet[a.betKey] += a.chipValue;
         }
+
+        HashSet<string> keys = new HashSet<string>(amountOnBet.Keys);
+        foreach (string key in keys)
+        {
+            RectTransform anchor = FindAnchorFromHistory(key);
+            if (anchor != null)
+            {
+                RebuildChipStack(key, anchor);
+                UpdateBetPlacementForKey(key);
+            }
+        }
+
+        Debug.Log("REBETS restored successfully.");
     }
 
     #endregion
 
     #region Helper Functions
 
-    // find anchor from history (most recent)
     private RectTransform FindAnchorFromHistory(string betKey)
     {
         for (int i = betHistory.Count - 1; i >= 0; i--)
@@ -301,6 +294,22 @@ public class BetManager : MonoBehaviour
         ClearCurrentBetsVisualOnly();
     }
 
+    internal void AutoBetComplete()
+    {
+        SaveRoundBets();
+        foreach (var kvp in placedChips)
+        {
+            foreach (var chip in kvp.Value)
+                Destroy(chip);
+        }
+
+        placedChips.Clear();
+        amountOnBet.Clear();
+        betHistory.Clear();
+        betPlacement.Clear();
+        Rebet();
+    }
+
     private void SaveRoundBets()
     {
         lastRoundBets.Clear();
@@ -332,7 +341,6 @@ public class BetManager : MonoBehaviour
         betPlacement.Clear();
     }
 
-    // build betKey from type and number list
     private string BuildBetKey(string type, List<string> numbers)
     {
         if (numbers == null || numbers.Count == 0)
@@ -340,54 +348,84 @@ public class BetManager : MonoBehaviour
         return type + "_" + string.Join("_", numbers);
     }
 
-    // parse betKey into type + number list
     private void ParseBetKey(string key, out string type, out List<string> numbers)
     {
         numbers = new List<string>();
+
         if (string.IsNullOrEmpty(key))
         {
             type = "";
             return;
         }
 
-        var parts = key.Split('_');
-        type = parts[0];
-        if (parts.Length > 1)
+        if (key.StartsWith("straight_up_"))
         {
-            numbers = parts.Skip(1).ToList();
+            type = "straight_up";
+            numbers.Add(key.Substring("straight_up_".Length));
+            return;
         }
+
+        string[] multiTypes = { "corner", "split", "street", "double_street", "trio", "basket" };
+
+        foreach (var multi in multiTypes)
+        {
+            if (key.StartsWith(multi + "_"))
+            {
+                type = multi;
+
+                var parts = key.Substring((multi + "_").Length).Split('_');
+                foreach (var p in parts)
+                    numbers.Add(p);
+
+                return;
+            }
+        }
+
+        if (key.StartsWith("dozen_") || key.StartsWith("column_"))
+        {
+            type = key;
+            return;
+        }
+
+        type = key;
     }
 
-    // update the betPlacement list for backend: remove old entry for key then add new one
     private void UpdateBetPlacementForKey(string betKey)
     {
-        // remove any existing entries with same key (based on type+numbers)
-        ParseBetKey(betKey, out string type, out List<string> numbers);
+        ParseBetKey(betKey, out string type, out List<string> numberStrings);
 
-        // remove existing matching entries
-        betPlacement.RemoveAll(bp =>
-        {
-            if (bp == null) return false;
-            if (bp.type != type) return false;
-            // compare numbers as strings
-            if (bp.numbers == null) return numbers.Count == 0;
-            var bpNums = bp.numbers.Select(o => o.ToString()).ToList();
-            return bpNums.SequenceEqual(numbers);
-        });
+        betPlacement.RemoveAll(bp => bp.type == type);
 
-        // add new
         float amt = amountOnBet.ContainsKey(betKey) ? amountOnBet[betKey] : 0f;
         if (amt <= 0f) return;
+
+        List<object> finalNumbers = new List<object>();
+
+        foreach (var n in numberStrings)
+        {
+            if (n == "00")
+            {
+                finalNumbers.Add("00");
+            }
+            else if (int.TryParse(n, out int numValue))
+            {
+                finalNumbers.Add(numValue);
+            }
+            else
+            {
+                Debug.LogWarning($"Invalid number format in betKey: {n}");
+            }
+        }
 
         betPlacement.Add(new BetPlacement
         {
             type = type,
             amount = amt,
-            numbers = new List<object>(numbers.Cast<object>())
+            numbers = finalNumbers
         });
     }
 
-    // remove any backend betPlacement entries that match this key
+
     private void RemoveBetPlacementForKey(string betKey)
     {
         ParseBetKey(betKey, out string type, out List<string> numbers);
@@ -404,7 +442,6 @@ public class BetManager : MonoBehaviour
 
     #endregion
 
-    // helper kept from old code but updated signature
     private void AddToBetList(string betKey, float amount)
     {
         ParseBetKey(betKey, out string type, out List<string> numbers);

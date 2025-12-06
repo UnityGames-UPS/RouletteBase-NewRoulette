@@ -17,6 +17,10 @@ public class ChipSelector : MonoBehaviour
         {
             chip.button.onClick.AddListener(() => OnChipSelected(chip));
         }
+        selectedChip = chips[2];
+        selectedChip.SetSelected(true);
+        chipSelected = true;
+        cursorChipImage.sprite = chips[2].chipImage.sprite;
     }
 
     private void OnChipSelected(ChipButton chip)
@@ -40,13 +44,13 @@ public class ChipSelector : MonoBehaviour
         return selectedChip != null ? selectedChip.value : 0;
     }
 
-    public void ShowCursorChip()
+    internal void ShowCursorChip()
     {
         if (chipSelected)
             cursorChipImage.gameObject.SetActive(true);
     }
 
-    public void HideCursorChip()
+    internal void HideCursorChip()
     {
         cursorChipImage.gameObject.SetActive(false);
     }
@@ -69,7 +73,7 @@ public class ChipSelector : MonoBehaviour
         cursorChipImage.rectTransform.anchoredPosition = localPos + new Vector2(0, offsetY);
     }
 
-    public ChipButton GetChipByValue(float value)
+    internal ChipButton GetChipByValue(float value)
     {
         const float EPS = 0.0001f;
 

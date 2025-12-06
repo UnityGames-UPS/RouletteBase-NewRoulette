@@ -5,18 +5,18 @@ using UnityEngine.EventSystems;
 
 public class NumberButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    // [SerializeField] private int numberValue;
-    // [SerializeField] private RectTransform chipAnchor;
-    private BetDefinition betDef; // ← assign in inspector
+    private BetDefinition betDef;
     [SerializeField] private Button btn;
     [SerializeField] private List<GameObject> highlightAreas;
 
     private BetManager betManager;
     private ChipSelector chipSelector;
+    private RouletteController rouletteController;
 
     private void Awake()
     {
         betManager = FindObjectOfType<BetManager>();
+        rouletteController = FindObjectOfType<RouletteController>();
         chipSelector = FindObjectOfType<ChipSelector>();
         betDef = GetComponent<BetDefinition>();
 
@@ -24,31 +24,32 @@ public class NumberButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
             btn.onClick.AddListener(OnPressed);
     }
 
-    // private void OnPressed()
-    // {
-    //     betManager.PlaceStraightUpBet(numberValue, chipAnchor);
-    // }
-
-    public void OnPressed()
+    private void OnPressed()
     {
         betManager.PlaceBet(betDef);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        chipSelector.ShowCursorChip();
-        foreach (var area in highlightAreas)
+        if (!rouletteController.isSpinOn)
         {
-            area.SetActive(true);
+            chipSelector.ShowCursorChip();
+            foreach (var area in highlightAreas)
+            {
+                area.SetActive(true);
+            }
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        chipSelector.HideCursorChip();
-        foreach (var area in highlightAreas)
+        if (!rouletteController.isSpinOn)
         {
-            area.SetActive(false);
+            chipSelector.HideCursorChip();
+            foreach (var area in highlightAreas)
+            {
+                area.SetActive(false);
+            }
         }
     }
 }

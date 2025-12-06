@@ -10,6 +10,7 @@ public class ChipScrollController : MonoBehaviour
     [SerializeField] private float scrollDuration = 0.2f;
     [SerializeField] private Button leftButton;
     [SerializeField] private Button rightButton;
+    [SerializeField] private AudioController audioController;
 
     private float chipWidth;
     private float spacing;
@@ -36,6 +37,7 @@ public class ChipScrollController : MonoBehaviour
 
     private void ScrollLeft()
     {
+        audioController.PlayNavigation();
         if (currentIndex <= 0) return;
 
         currentIndex--;
@@ -44,6 +46,7 @@ public class ChipScrollController : MonoBehaviour
 
     private void ScrollRight()
     {
+        audioController.PlayNavigation();
         int maxIndex = content.childCount - Mathf.FloorToInt(viewport.rect.width / chipWidth);
         if (currentIndex >= maxIndex) return;
 

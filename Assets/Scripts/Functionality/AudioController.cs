@@ -1,90 +1,142 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
-
-public class AudioController : MonoBehaviour
+internal class AudioController : MonoBehaviour
 {
-    [SerializeField] private AudioSource bg_adudio;
-    [SerializeField] internal AudioSource audioPlayer_wl;
-    [SerializeField] internal AudioSource audioPlayer_button;
-    [SerializeField] private AudioClip[] clips;
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource bgSource;
+    [SerializeField] private AudioSource gameSource;
+    [SerializeField] private AudioSource uiSource;
 
+    [Header("Background")]
+    [SerializeField] private AudioClip bgMusic;
+
+    [Header("Game Sounds")]
+    [SerializeField] private AudioClip ballRolling;
+    [SerializeField] private AudioClip ballStopping;
+    [SerializeField] private AudioClip winPopup;
+
+    [Header("UI Sounds")]
+    [SerializeField] private AudioClip chipSound;
+    [SerializeField] private AudioClip spinButton;
+    [SerializeField] private AudioClip uiButton;
+    [SerializeField] private AudioClip navigation;
 
     private void Start()
     {
-        audioPlayer_button.clip = clips[clips.Length-1];
+        PlayBackground();
     }
 
-    internal void PlayWLAudio(string type, bool loop=true)
+    internal void PlayBackground()
     {
-        
-        int index = 0;
-        switch (type)
-        {
-            case "spin":
-                index = 0;
-                break;
-            case "win":
-                index = UnityEngine.Random.Range(1, 2);
-                break;
-            case "lose":
-                index = 3;
-                break;
-            case "chip":
-                index = 4;
-                break;
-        }
-        StopWLAaudio();
-        audioPlayer_wl.clip = clips[index];
-        audioPlayer_wl.loop = loop;
-        audioPlayer_wl.Play();
+        if (!bgMusic) return;
 
+        bgSource.clip = bgMusic;
+        bgSource.loop = true;
+        if (!bgSource.isPlaying)
+            bgSource.Play();
     }
 
-    internal void PlayButtonAudio() {
-        StopButtonAudio();
-        audioPlayer_button.Play();
-        Invoke("StopButtonAudio", audioPlayer_button.clip.length);
-
-    }
-
-    internal void StopWLAaudio()
+    internal void StopBackground()
     {
-        audioPlayer_wl.Stop();
-        audioPlayer_wl.loop = false;
+        bgSource.Stop();
     }
 
-    internal void StopButtonAudio() {
-
-        audioPlayer_button.Stop();
-
+    internal void PlayBallRolling()
+    {
+        PlayGame(ballRolling, true);
     }
 
-    internal void StopBgAudio() {
-        bg_adudio.Stop();
-
+    internal void PlayBallStop()
+    {
+        PlayGame(ballStopping, false);
     }
 
-    internal void ToggleMute(bool toggle, string type="all") {
+    internal void PlayWinPopup()
+    {
+        PlayGame(winPopup, false);
+    }
 
-        switch (type)
+    private void PlayGame(AudioClip clip, bool loop)
+    {
+        if (!clip) return;
+
+        gameSource.Stop();
+        gameSource.clip = clip;
+        gameSource.loop = loop;
+        gameSource.Play();
+    }
+
+    internal void StopGameAudio()
+    {
+        gameSource.Stop();
+        gameSource.loop = false;
+    }
+
+    internal void PlayChip()
+    {
+        uiSource.PlayOneShot(chipSound);
+    }
+
+    internal void PlaySpinButton()
+    {
+        uiSource.PlayOneShot(spinButton);
+    }
+
+    internal void PlayUIButton()
+    {
+        uiSource.PlayOneShot(uiButton);
+    }
+
+    internal void PlayNavigation()
+    {
+        uiSource.PlayOneShot(navigation);
+    }
+
+    internal void MuteAll(bool mute)
+    {
+        bgSource.mute = mute;
+        gameSource.mute = mute;
+        uiSource.mute = mute;
+    }
+
+    internal void SetBGVolume(float value)
+    {
+        if (!bgSource) return;
+
+        bgSource.volume = value;
+        bgSource.mute = value <= 0f;
+
+        if (value > 0f && !bgSource.isPlaying && bgMusic != null)
         {
-            case "bg":
-                bg_adudio.mute = toggle;
-                break;
-            case "button":
-                audioPlayer_button.mute=toggle;
-                break;
-            case "wl":
-                audioPlayer_wl.mute=toggle;
-                break;
-            case "all":
-                audioPlayer_wl.mute = toggle;
-                bg_adudio.mute = toggle;
-                audioPlayer_button.mute = toggle;
-                break;
+            bgSource.clip = bgMusic;
+            bgSource.loop = true;
+            bgSource.Play();
+        }
+
+        if (value <= 0f)
+        {
+            bgSource.Pause();
         }
     }
 
+    internal void SetSoundVolume(float value)
+    {
+        bool mute = value <= 0f;
+
+        if (gameSource)
+        {
+            gameSource.volume = value;
+            gameSource.mute = mute;
+        }
+
+        if (uiSource)
+        {
+            uiSource.volume = value;
+            uiSource.mute = mute;
+        }
+    }
+
+
+    internal void MuteBackground(bool mute) => bgSource.mute = mute;
+    internal void MuteGame(bool mute) => gameSource.mute = mute;
+    internal void MuteUI(bool mute) => uiSource.mute = mute;
 }

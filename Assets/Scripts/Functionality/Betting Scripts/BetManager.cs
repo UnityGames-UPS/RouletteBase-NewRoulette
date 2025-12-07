@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using System.Linq;
@@ -290,6 +291,7 @@ public class BetManager : MonoBehaviour
 
     internal void OnRoundComplete()
     {
+        rouletteController.betCount = 0;
         SaveRoundBets();
         ClearCurrentBetsVisualOnly();
     }
@@ -438,6 +440,70 @@ public class BetManager : MonoBehaviour
             var bpNums = bp.numbers.Select(o => o.ToString()).ToList();
             return bpNums.SequenceEqual(numbers);
         });
+    }
+
+    #endregion
+    #region WiningAnimation
+
+    internal void PlayWinningBetAnimation(List<WinningBet> winningBets)
+    {
+        foreach (var win in winningBets)
+        {
+            string betKey = BuildBetKey(win.type, null);
+
+            RectTransform anchor = FindAnchorFromHistory(betKey);
+            if (anchor == null)
+                continue;
+
+            if (placedChips.ContainsKey(betKey))
+            {
+                foreach (var c in placedChips[betKey])
+                    Destroy(c);
+                placedChips[betKey].Clear();
+            }
+
+            amountOnBet[betKey] = win.winAmount;
+            RebuildChipStack(betKey, anchor);
+
+            StartCoroutine(AnimateWinChipsToRoot(betKey));
+        }
+    }
+
+    private IEnumerator AnimateWinChipsToRoot(string betKey)
+    {
+        if (!placedChips.ContainsKey(betKey))
+            yield break;
+
+        List<GameObject> chips = placedChips[betKey];
+
+        Vector2 targetPos = Vector2.zero; 
+        float delay = 0f;
+
+        foreach (var chip in chips)
+        {
+            RectTransform rt = chip.GetComponent<RectTransform>();
+
+            rt.SetAsLastSibling(); 
+
+            Sequence seq = DOTween.Sequence();
+            seq.SetDelay(delay);
+
+            seq.Join(rt.DOAnchorPos(targetPos, 0.45f).SetEase(Ease.InBack));
+
+            seq.Join(rt.DOScale(0.15f, 0.45f));
+
+            seq.OnComplete(() =>
+            {
+                Destroy(rt.gameObject);
+            });
+
+            delay += 0.05f;
+        }
+
+        yield return new WaitForSeconds(0.6f);
+
+        placedChips.Remove(betKey);
+        amountOnBet.Remove(betKey);
     }
 
     #endregion

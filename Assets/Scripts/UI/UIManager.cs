@@ -41,7 +41,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button StatisticsButton;
     [SerializeField] private Button FavouriteBetButton;
     [SerializeField] private Button SettingsButton;
-    [SerializeField] private Button SoundButton;
     [SerializeField] private Button AutoSpinButton;
     [SerializeField] private Button AutoSpinStopButton;
     [SerializeField] private Button InfoButton;
@@ -53,13 +52,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject StatisticsPopup_Object;
     [SerializeField] private GameObject FavouriteBetPopup_Object;
     [SerializeField] private GameObject SettingsPopup_Object;
-    [SerializeField] private GameObject SoundPopup_Object;
     [SerializeField] private GameObject AutoSpinPopup_Object;
     [SerializeField] private GameObject AutoSpinPopup2_Object;
     [SerializeField] private GameObject InfoPopup_Object;
     [SerializeField] private GameObject WiningImage;
     [SerializeField] private GameObject SpinButton;
     [SerializeField] private GameObject TurboButton;
+
+    [Header("Sound Panel")]
+    [SerializeField] private Button VolumeButton;
+    [SerializeField] private Slider volumeSlider;
+    [SerializeField] private GameObject VolumePopup_Object;
 
     [Header("Popup Objects")]
     [SerializeField] private GameObject MainPopup_Object;
@@ -79,6 +82,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject BlackWinNumberPopup_Object;
     [SerializeField] private GameObject GreenWinNumberPopup_Object;
     [SerializeField] private TMP_Text WinNumberPopup_Text;
+    [SerializeField] private TMP_Text WinAmount_Text;
+    [SerializeField] private GameObject WinAmount_Object;
 
     [Header("Settings Popup")]
     [SerializeField] private Toggle BgMusicToggle;
@@ -135,16 +140,18 @@ public class UIManager : MonoBehaviour
         if (FavouriteBetButton) FavouriteBetButton.onClick.AddListener(() => TogglePopup(FavouriteBetPopup_Object));
         if (SettingsButton) SettingsButton.onClick.RemoveAllListeners();
         if (SettingsButton) SettingsButton.onClick.AddListener(() => TogglePopup(SettingsPopup_Object));
-        if (SoundButton) SoundButton.onClick.RemoveAllListeners();
-        if (SoundButton) SoundButton.onClick.AddListener(() => TogglePopup(SoundPopup_Object));
+        if (VolumeButton) VolumeButton.onClick.RemoveAllListeners();
+        if (VolumeButton) VolumeButton.onClick.AddListener(() => TogglePopup(VolumePopup_Object));
+        if (volumeSlider) volumeSlider.onValueChanged.RemoveAllListeners();
+        if (volumeSlider) volumeSlider.onValueChanged.AddListener(OnVolumeSliderChanged);
         if (AutoSpinButton) AutoSpinButton.onClick.RemoveAllListeners();
         if (AutoSpinButton) AutoSpinButton.onClick.AddListener(() => TogglePopup(AutoSpinPopup_Object));
         if (InfoButton) InfoButton.onClick.RemoveAllListeners();
         if (InfoButton) InfoButton.onClick.AddListener(() => TogglePopup(InfoPopup_Object));
         if (AutoSpinStopButton) AutoSpinStopButton.onClick.RemoveAllListeners();
         if (AutoSpinStopButton) AutoSpinStopButton.onClick.AddListener(() => StopAutoSpin());
-        if(HomeButton) HomeButton.onClick.RemoveAllListeners();
-        if(HomeButton) HomeButton.onClick.AddListener(()=>OpenPopup(QuitPopup_Object));
+        if (HomeButton) HomeButton.onClick.RemoveAllListeners();
+        if (HomeButton) HomeButton.onClick.AddListener(() => OpenPopup(QuitPopup_Object));
         if (LowBalanceButton) LowBalanceButton.onClick.RemoveAllListeners();
         if (LowBalanceButton) LowBalanceButton.onClick.AddListener(() => ClosePopup(LowBalancePopup_Object));
         if (EmptyBetButton) EmptyBetButton.onClick.RemoveAllListeners();
@@ -284,12 +291,13 @@ public class UIManager : MonoBehaviour
         BlackWinNumberHistoryText.text = blackLine + "\n" + BlackWinNumberHistoryText.text;
     }
 
-    internal void ShowWinning(string color, int number)
+    internal void ShowWinning(string color, int number , float winAmount)
     {
         isWinPopupActive = true;
         RedWinNumberPopup_Object.SetActive(false);
         BlackWinNumberPopup_Object.SetActive(false);
         GreenWinNumberPopup_Object.SetActive(false);
+        WinAmount_Object.SetActive(false);
 
         WinNumberPopup_Text.text = number.ToString();
 
@@ -306,6 +314,11 @@ public class UIManager : MonoBehaviour
             GreenWinNumberPopup_Object.SetActive(true);
         }
 
+        if (winAmount > 0)
+        {
+            WinAmount_Object.SetActive(true);
+            WinAmount_Text.text = winAmount.ToString();
+        }
         audioController.PlayWinPopup();
         WinNumberPopup_Object.SetActive(true);
 
@@ -530,7 +543,7 @@ public class UIManager : MonoBehaviour
         BgMusicSlider.onValueChanged.RemoveAllListeners();
         BgMusicToggle.onValueChanged.RemoveAllListeners();
 
-        BgMusicSlider.value = 1f;
+        BgMusicSlider.value = 0.5f;
         BgMusicToggle.isOn = true;
 
         BgMusicSlider.onValueChanged.AddListener(OnMusicSliderChanged);
@@ -539,7 +552,7 @@ public class UIManager : MonoBehaviour
         soundSlider.onValueChanged.RemoveAllListeners();
         soundToggle.onValueChanged.RemoveAllListeners();
 
-        soundSlider.value = 1f;
+        soundSlider.value = 0.5f;
         soundToggle.isOn = true;
 
         soundSlider.onValueChanged.AddListener(OnSoundSliderChanged);
@@ -574,6 +587,21 @@ public class UIManager : MonoBehaviour
         else
         {
             BgMusicSlider.value = Mathf.Max(lastMusicVolume, 0.1f);
+        }
+    }
+
+    private void OnVolumeSliderChanged(float value)
+    {
+        audioController.SetBGVolume(value);
+        audioController.SetSoundVolume(value);
+
+        if (value <= 0f)
+            VolumeButton.interactable = false;
+        else
+        {
+            lastMusicVolume = value;
+            lastSoundVolume = value;
+            VolumeButton.interactable = true;
         }
     }
 

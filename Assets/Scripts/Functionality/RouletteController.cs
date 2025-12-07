@@ -10,6 +10,7 @@ public class RouletteController : MonoBehaviour
 {
     [Header("Buttons")]
     [SerializeField] private Button spin_Button;
+    [SerializeField] private Button Turbo_Button;
 
     [Header("Managers")]
     [SerializeField] private AudioController audioController;
@@ -18,7 +19,7 @@ public class RouletteController : MonoBehaviour
     [SerializeField] private UIManager uiManager;
     [SerializeField] private BetManager betManager;
     [SerializeField] private BallScript BallManager;
-    private List<BetPlacement> bet = new List<BetPlacement>{};
+    private List<BetPlacement> bet = new List<BetPlacement> { };
     internal float betCount = 0f;
     internal bool isSpinOn = false;
 
@@ -63,6 +64,8 @@ public class RouletteController : MonoBehaviour
     {
         if (spin_Button) spin_Button.onClick.RemoveAllListeners();
         if (spin_Button) spin_Button.onClick.AddListener(delegate { StartSpinning(); });
+        if (Turbo_Button) Turbo_Button.onClick.RemoveAllListeners();
+        if (Turbo_Button) Turbo_Button.onClick.AddListener(delegate { StartSpinning(); });
     }
 
     private void StartSpinning()
@@ -79,7 +82,7 @@ public class RouletteController : MonoBehaviour
             uiManager.LowBalPopup();
             yield break;
         }
-        if(betCount <=0)
+        if (betCount <= 0)
         {
             uiManager.EmptyBetPopup();
             yield break;
@@ -107,17 +110,18 @@ public class RouletteController : MonoBehaviour
             {
                 yield return new WaitForSeconds(2f);
             }
-            uiManager.ShowWinning(socketManager.resultData.payload.color, socketManager.resultData.payload.winningNumber);
+            // betManager.PlayWinningBetAnimation(socketManager.resultData.payload.winningBets);
+            uiManager.ShowWinning(socketManager.resultData.payload.color, socketManager.resultData.payload.winningNumber,socketManager.resultData.payload.winAmount);
             yield return new WaitUntil(() => !uiManager.isWinPopupActive);
             Debug.Log("Animation Start");
             uiManager.StartWinNummberAnimation(socketManager.resultData.payload.winningNumber);
             uiManager.UpdateWinNumberHistoryUI(socketManager.resultData.payload.color, socketManager.resultData.payload.winningNumber);
-            uiManager.UpdateHotColdNumbers(socketManager.resultData.payload.hot_numbers,socketManager.resultData.payload.cold_numbers);
+            uiManager.UpdateHotColdNumbers(socketManager.resultData.payload.hot_numbers, socketManager.resultData.payload.cold_numbers);
             uiManager.ToggleButtons(true);
             socketManager.isResultdone = false;
             uiManager.autoSpinCount--;
             uiManager.AutoSpintCountText.text = uiManager.autoSpinCount.ToString();
-            if(uiManager.autoSpinCount > 0)
+            if (uiManager.autoSpinCount > 0)
             {
                 betManager.AutoBetComplete();
             }

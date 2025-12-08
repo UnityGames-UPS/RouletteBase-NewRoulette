@@ -55,7 +55,7 @@ public class BetManager : MonoBehaviour
 
         audioController.PlayChip();
         rouletteController.betCount += chipValue;
-        rouletteController.UpdateBetandBalance();
+        rouletteController.UpdateBet();
         RebuildChipStack(key, betDef.chipAnchor);
         UpdateBetPlacementForKey(key);
     }
@@ -121,19 +121,35 @@ public class BetManager : MonoBehaviour
     internal void UndoLastBet()
     {
         audioController.PlayUIButton();
+
         if (betHistory.Count == 0)
             return;
 
         BetAction last = betHistory[betHistory.Count - 1];
-        betHistory.RemoveAt(betHistory.Count - 1);
-
         string key = last.betKey;
-        float value = last.chipValue;
 
         if (!amountOnBet.ContainsKey(key))
             return;
 
-        amountOnBet[key] -= value;
+        List<float> chipStack = GetCurrentChipStackValues(key);
+        if (chipStack.Count == 0)
+            return;
+
+        float removedChipValue = chipStack[chipStack.Count - 1];
+
+        amountOnBet[key] -= removedChipValue;
+        rouletteController.betCount -= removedChipValue;
+        rouletteController.UpdateBet();
+
+        float toRemove = removedChipValue;
+        for (int i = betHistory.Count - 1; i >= 0 && toRemove > 0f; i--)
+        {
+            if (betHistory[i].betKey != key)
+                continue;
+
+            toRemove -= betHistory[i].chipValue;
+            betHistory.RemoveAt(i);
+        }
 
         if (amountOnBet[key] <= 0f)
         {
@@ -143,16 +159,20 @@ public class BetManager : MonoBehaviour
             {
                 foreach (var c in placedChips[key])
                     Destroy(c);
+
                 placedChips.Remove(key);
             }
 
             RemoveBetPlacementForKey(key);
             return;
         }
-        rouletteController.betCount -= last.chipValue;
-        rouletteController.UpdateBetandBalance();
-        RebuildChipStack(key, last.anchor);
-        UpdateBetPlacementForKey(key);
+
+        RectTransform anchor = FindAnchorFromHistory(key);
+        if (anchor != null)
+        {
+            RebuildChipStack(key, anchor);
+            UpdateBetPlacementForKey(key);
+        }
     }
 
     internal void DoubleBet()
@@ -172,7 +192,7 @@ public class BetManager : MonoBehaviour
 
             amountOnBet[a.betKey] += a.chipValue;
             rouletteController.betCount += a.chipValue;
-            rouletteController.UpdateBetandBalance();
+            rouletteController.UpdateBet();
             betHistory.Add(new BetAction
             {
                 betKey = a.betKey,
@@ -227,6 +247,7 @@ public class BetManager : MonoBehaviour
                 amountOnBet[a.betKey] = 0f;
 
             amountOnBet[a.betKey] += a.chipValue;
+            rouletteController.betCount += a.chipValue;
         }
 
         HashSet<string> keys = new HashSet<string>(amountOnBet.Keys);
@@ -237,6 +258,7 @@ public class BetManager : MonoBehaviour
             {
                 RebuildChipStack(key, anchor);
                 UpdateBetPlacementForKey(key);
+                rouletteController.UpdateBet();
             }
         }
 
@@ -289,6 +311,15 @@ public class BetManager : MonoBehaviour
         return result;
     }
 
+    private List<float> GetCurrentChipStackValues(string betKey)
+    {
+        if (!amountOnBet.ContainsKey(betKey))
+            return new List<float>();
+
+        float total = amountOnBet[betKey];
+        return ConvertToChipCombination(total);
+    }
+
     internal void OnRoundComplete()
     {
         rouletteController.betCount = 0;
@@ -336,7 +367,8 @@ public class BetManager : MonoBehaviour
             foreach (var chip in kvp.Value)
                 Destroy(chip);
         }
-
+        rouletteController.betCount = 0;
+        rouletteController.UpdateBet();
         placedChips.Clear();
         amountOnBet.Clear();
         betHistory.Clear();
@@ -476,14 +508,14 @@ public class BetManager : MonoBehaviour
 
         List<GameObject> chips = placedChips[betKey];
 
-        Vector2 targetPos = Vector2.zero; 
+        Vector2 targetPos = Vector2.zero;
         float delay = 0f;
 
         foreach (var chip in chips)
         {
             RectTransform rt = chip.GetComponent<RectTransform>();
 
-            rt.SetAsLastSibling(); 
+            rt.SetAsLastSibling();
 
             Sequence seq = DOTween.Sequence();
             seq.SetDelay(delay);

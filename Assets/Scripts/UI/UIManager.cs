@@ -177,15 +177,27 @@ public class UIManager : MonoBehaviour
 
     private void TogglePopup(GameObject popup)
     {
-        // audioController.PlayButtonAudio();
         audioController.PlayUIButton();
-        if (popup == SettingsPopup_Object && AutoSpinPopup_Object.activeSelf)
+        audioController.PlayUIButton();
+        if (popup == SettingsPopup_Object && (AutoSpinPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf))
         {
             AutoSpinPopup_Object.SetActive(false);
+            VolumePopup_Object.SetActive(false);
+            InfoPopup_Object.SetActive(false);
+            AutoSpinPopup2_Object.SetActive(false);
         }
-        if (popup == AutoSpinPopup_Object && SettingsPopup_Object.activeSelf)
+        if (popup == AutoSpinPopup_Object && (SettingsPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf))
         {
             SettingsPopup_Object.SetActive(false);
+            VolumePopup_Object.SetActive(false);
+            InfoPopup_Object.SetActive(false);
+        }
+        if (popup == InfoPopup_Object && (SettingsPopup_Object.activeSelf || VolumePopup_Object.activeSelf || AutoSpinPopup_Object.activeSelf))
+        {
+            SettingsPopup_Object.SetActive(false);
+            AutoSpinPopup_Object.SetActive(false);
+            VolumePopup_Object.SetActive(false);
+            AutoSpinPopup2_Object.SetActive(false);
         }
         if (popup.activeSelf)
         {
@@ -291,7 +303,7 @@ public class UIManager : MonoBehaviour
         BlackWinNumberHistoryText.text = blackLine + "\n" + BlackWinNumberHistoryText.text;
     }
 
-    internal void ShowWinning(string color, int number , float winAmount)
+    internal void ShowWinning(string color, int number, float winAmount)
     {
         isWinPopupActive = true;
         RedWinNumberPopup_Object.SetActive(false);

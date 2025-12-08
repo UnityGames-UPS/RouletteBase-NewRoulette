@@ -20,7 +20,7 @@ public class SocketIOManager : MonoBehaviour
   protected string NameSpace = "playground";
   protected string SocketURI = null;
   protected string TestSocketURI = "http://localhost:5000/";
-  protected string gameID = "SL-LLL";
+  protected string gameID = "OT-RLT";
   private SocketManager manager;
   private const int maxReconnectionAttempts = 6;
   private readonly TimeSpan reconnectionDelay = TimeSpan.FromSeconds(10);
@@ -127,7 +127,7 @@ public class SocketIOManager : MonoBehaviour
   {
     // Create and setup SocketManager
 #if UNITY_EDITOR
-    Debug.Log("yo-yo");
+    // Debug.Log("yo-yo");
     this.manager = new SocketManager(new Uri(TestSocketURI), options);
 #else
         this.manager = new SocketManager(new Uri(SocketURI), options);

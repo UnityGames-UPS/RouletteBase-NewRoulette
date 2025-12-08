@@ -99,6 +99,7 @@ public class RouletteController : MonoBehaviour
             socketManager.AccumulateResult(bet);
             Debug.Log(bet);
             yield return new WaitUntil(() => socketManager.isResultdone);
+            UpdateBalance();
             uiManager.StartCoroutine(uiManager.UpdateResultUI());
             if (uiManager.turboSpin == false)
             {
@@ -133,9 +134,15 @@ public class RouletteController : MonoBehaviour
         }
     }
 
-    internal void UpdateBetandBalance()
+    internal void UpdateBet()
     {
         uiManager.totalBetText.text = betCount.ToString();
+        // double currBal = socketManager.playerdata.balance - betCount;
+        // uiManager.balanceText.text = currBal.ToString();
+    }
+
+    internal void UpdateBalance()
+    {
         double currBal = socketManager.playerdata.balance - betCount;
         uiManager.balanceText.text = currBal.ToString();
     }

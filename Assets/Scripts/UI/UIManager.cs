@@ -82,11 +82,13 @@ public class UIManager : MonoBehaviour
     [Header("Popup Objects")]
     [SerializeField] private GameObject MainPopup_Object;
     [SerializeField] private GameObject LowBalancePopup_Object;
+    [SerializeField] private GameObject BetLimitPopup_Object;
     [SerializeField] private GameObject EmptyBetPopup_Object;
     [SerializeField] private GameObject DisconnectPopup_Object;
     [SerializeField] private GameObject ReconnectPopup_Object;
     [SerializeField] private GameObject QuitPopup_Object;
     [SerializeField] private Button LowBalanceButton;
+    [SerializeField] private Button BetLimitButton;
     [SerializeField] private Button EmptyBetButton;
     [SerializeField] private Button QuitYesButton;
     [SerializeField] private Button QuitNoButton;
@@ -170,6 +172,8 @@ public class UIManager : MonoBehaviour
         if (HomeButton) HomeButton.onClick.AddListener(() => OpenPopup(QuitPopup_Object));
         if (LowBalanceButton) LowBalanceButton.onClick.RemoveAllListeners();
         if (LowBalanceButton) LowBalanceButton.onClick.AddListener(() => ClosePopup(LowBalancePopup_Object));
+        if (BetLimitButton) BetLimitButton.onClick.RemoveAllListeners();
+        if (BetLimitButton) BetLimitButton.onClick.AddListener(() => ClosePopup(LowBalancePopup_Object));
         if (EmptyBetButton) EmptyBetButton.onClick.RemoveAllListeners();
         if (EmptyBetButton) EmptyBetButton.onClick.AddListener(() => ClosePopup(EmptyBetPopup_Object));
         if (QuitYesButton) QuitYesButton.onClick.RemoveAllListeners();
@@ -285,7 +289,7 @@ public class UIManager : MonoBehaviour
     }
     internal IEnumerator UpdateResultUI()
     {
-        totalBetText.text = socketManager.resultData.payload.totalBetAmount.ToString("F2");
+        // totalBetText.text = socketManager.resultData.payload.totalBetAmount.ToString("F2");
         yield return new WaitUntil(() => BallManager.ballStopped);
         UpdateUI();
         Debug.Log("UI Updated");
@@ -528,6 +532,10 @@ public class UIManager : MonoBehaviour
     {
         OpenPopup(LowBalancePopup_Object);
     }
+    internal void BetLimitPopup()
+    {
+        OpenPopup(BetLimitPopup_Object);
+    }
 
     internal void EmptyBetPopup()
     {
@@ -732,7 +740,7 @@ public class UIManager : MonoBehaviour
     private void RaceTrackBets(bool plus)
     {
 
-        if (plus && raceTrackNumber < 8)
+        if (plus && raceTrackNumber < 3)
         {
             raceTrackNumber++;
         }
@@ -763,30 +771,30 @@ public class UIManager : MonoBehaviour
                 // FourPanel.SetActive(false);
                 ThreePanel.SetActive(true);
                 break;
-            // case 4:
-            //     ThreePanel.SetActive(false);
-            //     FivePanel.SetActive(false);
-            //     FourPanel.SetActive(true);
-            //     break;
-            // case 5:
-            //     FourPanel.SetActive(false);
-            //     SixPanel.SetActive(false);
-            //     FivePanel.SetActive(true);
-            //     break;
-            // case 6:
-            //     FivePanel.SetActive(false);
-            //     SevenPanel.SetActive(false);
-            //     SixPanel.SetActive(true);
-            //     break;
-            // case 7:
-            //     SixPanel.SetActive(false);
-            //     EightPanel.SetActive(false);
-            //     SevenPanel.SetActive(true);
-            //     break;
-            // case 8:
-            //     SevenPanel.SetActive(false);
-            //     EightPanel.SetActive(true);
-            //     break;
+                // case 4:
+                //     ThreePanel.SetActive(false);
+                //     FivePanel.SetActive(false);
+                //     FourPanel.SetActive(true);
+                //     break;
+                // case 5:
+                //     FourPanel.SetActive(false);
+                //     SixPanel.SetActive(false);
+                //     FivePanel.SetActive(true);
+                //     break;
+                // case 6:
+                //     FivePanel.SetActive(false);
+                //     SevenPanel.SetActive(false);
+                //     SixPanel.SetActive(true);
+                //     break;
+                // case 7:
+                //     SixPanel.SetActive(false);
+                //     EightPanel.SetActive(false);
+                //     SevenPanel.SetActive(true);
+                //     break;
+                // case 8:
+                //     SevenPanel.SetActive(false);
+                //     EightPanel.SetActive(true);
+                //     break;
         }
     }
 

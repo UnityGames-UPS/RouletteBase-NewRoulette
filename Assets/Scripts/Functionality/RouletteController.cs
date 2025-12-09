@@ -77,6 +77,10 @@ public class RouletteController : MonoBehaviour
 
     internal IEnumerator TweenRoutine()
     {
+        if (betCount > 5000)
+        {
+            uiManager.BetLimitPopup();
+        }
         if (betCount > socketManager.playerdata.balance)
         {
             uiManager.LowBalPopup();
@@ -123,7 +127,7 @@ public class RouletteController : MonoBehaviour
             uiManager.ToggleButtons(true);
             socketManager.isResultdone = false;
             uiManager.autoSpinCount--;
-            uiManager.AutoSpintCountText.text = uiManager.autoSpinCount.ToString();
+            uiManager.AutoSpintCountText.text = (uiManager.autoSpinCount-1).ToString();
             if (uiManager.autoSpinCount > 0)
             {
                 betManager.AutoBetComplete();

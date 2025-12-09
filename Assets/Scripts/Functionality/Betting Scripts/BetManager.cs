@@ -12,6 +12,8 @@ public class BetManager : MonoBehaviour
     [SerializeField] private ChipSelector chipSelector;
     [SerializeField] private AudioController audioController;
     [SerializeField] private RouletteController rouletteController;
+    [SerializeField] private SocketIOManager socketManager;
+    [SerializeField] private UIManager uIManager;
     private Dictionary<string, List<GameObject>> placedChips = new Dictionary<string, List<GameObject>>();
     internal List<BetPlacement> betPlacement = new List<BetPlacement> { };
 
@@ -38,6 +40,11 @@ public class BetManager : MonoBehaviour
         float chipValue = chipSelector.GetSelectedChipValue();
         if (chipValue <= 0)
             return;
+        if (chipValue > socketManager.initialData.bets.limits.max - rouletteController.betCount)
+        {
+            uIManager.BetLimitPopup();
+            return;
+        }
 
         string key = BuildBetKey(betDef.betType, betDef.numbers);
 
@@ -180,7 +187,11 @@ public class BetManager : MonoBehaviour
         audioController.PlayUIButton();
         if (betHistory.Count == 0)
             return;
-
+        if (socketManager.initialData.bets.limits.max < (rouletteController.betCount*2))
+        {
+            uIManager.BetLimitPopup();
+            return;
+        }
         int originalCount = betHistory.Count;
 
         for (int i = 0; i < originalCount; i++)

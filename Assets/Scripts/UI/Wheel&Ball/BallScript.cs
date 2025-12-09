@@ -35,7 +35,7 @@ public class BallScript : MonoBehaviour
     {
         if (trargetPosition != null)
         {
-            float speed = 6f;
+            float speed = 4f;
 
             transform.position = Vector3.Lerp(
                 transform.position,

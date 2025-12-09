@@ -448,7 +448,7 @@ public class Payload
   public string color { get; set; }
   public int winAmount { get; set; }
   public List<WinningBet> winningBets { get; set; }
-  public int totalBetAmount { get; set; }
+  public float totalBetAmount { get; set; }
   public List<HotNumber> hot_numbers { get; set; }
   public List<ColdNumber> cold_numbers { get; set; }
 }
@@ -459,7 +459,7 @@ public class WinningBet
 {
   public string type { get; set; }
   public object numbers { get; set; }
-  public int betAmount { get; set; }
+  public float betAmount { get; set; }
   public int payout { get; set; }
   public int winAmount { get; set; }
 }

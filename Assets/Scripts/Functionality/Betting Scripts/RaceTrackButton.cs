@@ -10,6 +10,8 @@ public class RaceTrackButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
     private Button btn;
     private BetDefinition betDef;
     private BetManager betManager;
+    // [SerializeField] private int NeighborNumber;
+    [SerializeField] private GameObject[] raceTrackBlurrImage;
 
 
     private void Awake()
@@ -22,6 +24,7 @@ public class RaceTrackButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
         betManager = FindObjectOfType<BetManager>();
         if (btn != null)
             btn.onClick.AddListener(OnPressed);
+        NeighborBlurrImage();
     }
 
     internal void OnPressed()
@@ -53,6 +56,21 @@ public class RaceTrackButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
         foreach (var area in highlightAreas)
         {
             area.SetActive(false);
+        }
+    }
+
+    private void NeighborBlurrImage()
+    {
+        // betDef.numbers;
+        for(int i =0 ; i < betDef.numbers.Count ; i++)
+        {
+            string num = betDef.numbers[i];
+            int n = int.Parse(num);
+            if(num == "00")
+            {
+                n = 37;
+            }
+            highlightAreas.Add(raceTrackBlurrImage[n]);
         }
     }
 }

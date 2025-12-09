@@ -63,7 +63,6 @@ public class SpinManager : MonoBehaviour
         if (Roulette_BallContainer) ballMovement = Roulette_BallContainer.DORotate(new Vector3(0, 0, 359), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1)
             .OnUpdate(() =>
             {
-                // if (parentDone) return;
                 Ball_Transform.localRotation = Quaternion.Inverse(Roulette_BallContainer.localRotation);
             });
 
@@ -78,7 +77,7 @@ public class SpinManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(5);
 
-        while (Ball_Transform.localPosition.x > 145 && Ball_Transform.localPosition.y > 30)
+        while (Ball_Transform.localPosition.x > 151 && Ball_Transform.localPosition.y > 33)
         {
             Ball_Transform.localPosition = new Vector2(Ball_Transform.localPosition.x - 2f, Ball_Transform.localPosition.y - 1f);
             ballMovement.timeScale -= 0.05f;

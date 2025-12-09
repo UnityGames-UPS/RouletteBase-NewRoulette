@@ -48,16 +48,31 @@ public class UIManager : MonoBehaviour
 
     [Header("GameObjects")]
     [SerializeField] private GameObject PaytablePopup_Object;
-    [SerializeField] private GameObject RaceTrackPopup_Object;
-    [SerializeField] private GameObject StatisticsPopup_Object;
+    [SerializeField] internal GameObject RaceTrackPopup_Object;
+    [SerializeField] internal GameObject StatisticsPopup_Object;
     [SerializeField] private GameObject FavouriteBetPopup_Object;
     [SerializeField] private GameObject SettingsPopup_Object;
-    [SerializeField] private GameObject AutoSpinPopup_Object;
-    [SerializeField] private GameObject AutoSpinPopup2_Object;
+    [SerializeField] internal GameObject AutoSpinPopup_Object;
+    [SerializeField] internal GameObject AutoSpinPopup2_Object;
     [SerializeField] private GameObject InfoPopup_Object;
     [SerializeField] private GameObject WiningImage;
     [SerializeField] private GameObject SpinButton;
     [SerializeField] private GameObject TurboButton;
+    [SerializeField] private GameObject Ball;
+
+    [Header("RaceTrack Panel")]
+    [SerializeField] private Button plusButton;
+    [SerializeField] private Button minusButton;
+    [SerializeField] private GameObject ZeroPanel;
+    [SerializeField] private GameObject OnePanel;
+    [SerializeField] private GameObject TwoPanel;
+    [SerializeField] private GameObject ThreePanel;
+    // [SerializeField] private GameObject FourPanel;
+    // [SerializeField] private GameObject FivePanel;
+    // [SerializeField] private GameObject SixPanel;
+    // [SerializeField] private GameObject SevenPanel;
+    // [SerializeField] private GameObject EightPanel;
+    [SerializeField] private TMP_Text raceTrackNumber_Text;
 
     [Header("Sound Panel")]
     [SerializeField] private Button VolumeButton;
@@ -115,6 +130,7 @@ public class UIManager : MonoBehaviour
     internal int autoSpinCount = 0;
     private float lastMusicVolume = 1f;
     private float lastSoundVolume = 1f;
+    private int raceTrackNumber = 0;
 
     private void Start()
     {
@@ -169,6 +185,10 @@ public class UIManager : MonoBehaviour
                 ClosePopup(QuitPopup_Object);
             }
         });
+        if (plusButton) plusButton.onClick.RemoveAllListeners();
+        if (plusButton) plusButton.onClick.AddListener(() => RaceTrackBets(true));
+        if (minusButton) minusButton.onClick.RemoveAllListeners();
+        if (minusButton) minusButton.onClick.AddListener(() => RaceTrackBets(false));
 
         ClosepopupButtons();
         AutoSpinButtons();
@@ -213,7 +233,7 @@ public class UIManager : MonoBehaviour
 
     private void ClosePanel(GameObject popup)
     {
-        // audioController.PlayButtonAudio();
+        audioController.PlayUIButton();
         audioController.PlayUIButton();
         popup.SetActive(false);
     }
@@ -382,7 +402,7 @@ public class UIManager : MonoBehaviour
     {
         SettingsPopup_Object.SetActive(false);
         AutoSpinPopup_Object.SetActive(false);
-        AutoSpinPopup2_Object.SetActive(false);
+        // AutoSpinPopup2_Object.SetActive(false);
         InfoPopup_Object.SetActive(false);
     }
 
@@ -422,8 +442,11 @@ public class UIManager : MonoBehaviour
                         break;
                 }
                 AutoSpinPopup_Object.SetActive(false);
-                AutoSpintCountText.text = autoSpinCount.ToString();
-                AutoSpinPopup2_Object.SetActive(true);
+                AutoSpintCountText.text = (autoSpinCount - 1).ToString();
+                if (rouletteController.betCount > 0)
+                {
+                    AutoSpinPopup2_Object.SetActive(true);
+                }
                 rouletteController.StartCoroutine(rouletteController.TweenRoutine());
             });
         }
@@ -433,7 +456,7 @@ public class UIManager : MonoBehaviour
         audioController.PlayUIButton();
         autoSpinCount = 0;
         AutoSpinPopup2_Object.SetActive(false);
-        AutoSpinPopup_Object.SetActive(true);
+        AutoSpinPopup_Object.SetActive(false);
     }
 
     internal void StartWinNummberAnimation(int winNum)
@@ -465,25 +488,34 @@ public class UIManager : MonoBehaviour
         innerImage.gameObject.SetActive(true);
         outerImage.gameObject.SetActive(true);
 
-        innerImage.color = new Color(1f, 1f, 1f, 0f);
-        outerImage.color = new Color(1f, 1f, 1f, 0f);
+        innerImage.color = new Color(1, 1, 1, 0);
+        outerImage.color = new Color(1, 1, 1, 0);
 
-        Tween winInnerImageTween = innerImage.DOFade(1, 1f).SetLoops(-1, LoopType.Yoyo);
+        Sequence seq = DOTween.Sequence();
+        seq.SetAutoKill(false);
+        seq.SetLoops(-1);
 
-        yield return new WaitForSeconds(1f);
+        seq.Append(innerImage.DOFade(1f, 0.2f));
+        seq.AppendInterval(0.2f);
 
-        Tween winOuterImageTween = outerImage.DOFade(1, 0.8f).SetLoops(-1, LoopType.Yoyo);
-        // .SetDelay(1f);
+        seq.Append(outerImage.DOFade(1f, 0.2f));
+        seq.AppendInterval(0.2f);
 
+        seq.Append(innerImage.DOFade(0f, 0.2f));
+        seq.AppendInterval(0.2f);
+
+        seq.Append(outerImage.DOFade(0f, 0.2f));
+        seq.AppendInterval(0.2f);
+
+        seq.Play();
         yield return new WaitUntil(() => !winNumberAnimation);
 
-        winInnerImageTween.Kill();
-        winOuterImageTween.Kill();
-
+        seq.Kill();
         winRect.anchoredPosition = originalAnchoredPos;
         innerImage.gameObject.SetActive(false);
         outerImage.gameObject.SetActive(false);
     }
+
 
     private void CallOnExitFunction()
     {
@@ -650,11 +682,13 @@ public class UIManager : MonoBehaviour
         {
             TurboButton.SetActive(false);
             SpinButton.SetActive(true);
+            Ball.SetActive(true);
         }
         else
         {
             SpinButton.SetActive(false);
             TurboButton.SetActive(true);
+            Ball.SetActive(false);
         }
     }
 
@@ -692,6 +726,67 @@ public class UIManager : MonoBehaviour
                 coldNumberTexts[i].gameObject.SetActive(false);
                 coldCountTexts[i].gameObject.SetActive(false);
             }
+        }
+    }
+
+    private void RaceTrackBets(bool plus)
+    {
+
+        if (plus && raceTrackNumber < 8)
+        {
+            raceTrackNumber++;
+        }
+        else if (!plus && raceTrackNumber > 0)
+        {
+            raceTrackNumber--;
+        }
+
+        raceTrackNumber_Text.text = raceTrackNumber.ToString();
+        switch (raceTrackNumber)
+        {
+            case 0:
+                OnePanel.SetActive(false);
+                ZeroPanel.SetActive(true);
+                break;
+            case 1:
+                ZeroPanel.SetActive(false);
+                TwoPanel.SetActive(false);
+                OnePanel.SetActive(true);
+                break;
+            case 2:
+                OnePanel.SetActive(false);
+                ThreePanel.SetActive(false);
+                TwoPanel.SetActive(true);
+                break;
+            case 3:
+                TwoPanel.SetActive(false);
+                // FourPanel.SetActive(false);
+                ThreePanel.SetActive(true);
+                break;
+            // case 4:
+            //     ThreePanel.SetActive(false);
+            //     FivePanel.SetActive(false);
+            //     FourPanel.SetActive(true);
+            //     break;
+            // case 5:
+            //     FourPanel.SetActive(false);
+            //     SixPanel.SetActive(false);
+            //     FivePanel.SetActive(true);
+            //     break;
+            // case 6:
+            //     FivePanel.SetActive(false);
+            //     SevenPanel.SetActive(false);
+            //     SixPanel.SetActive(true);
+            //     break;
+            // case 7:
+            //     SixPanel.SetActive(false);
+            //     EightPanel.SetActive(false);
+            //     SevenPanel.SetActive(true);
+            //     break;
+            // case 8:
+            //     SevenPanel.SetActive(false);
+            //     EightPanel.SetActive(true);
+            //     break;
         }
     }
 

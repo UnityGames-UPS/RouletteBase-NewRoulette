@@ -399,7 +399,7 @@ public class BetManager : MonoBehaviour
             return;
         }
 
-        string[] multiTypes = { "corner", "split", "street", "double_street", "trio", "basket" };
+        string[] multiTypes = { "corner", "split", "street", "top_line", "six_line"};
 
         foreach (var multi in multiTypes)
         {

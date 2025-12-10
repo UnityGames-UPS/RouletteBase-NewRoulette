@@ -53,7 +53,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject FavouriteBetPopup_Object;
     [SerializeField] private GameObject SettingsPopup_Object;
     [SerializeField] internal GameObject AutoSpinPopup_Object;
-    [SerializeField] internal GameObject AutoSpinPopup2_Object;
+    [SerializeField] internal GameObject AutoStopPopup_Object;
     [SerializeField] private GameObject InfoPopup_Object;
     [SerializeField] private GameObject WiningImage;
     [SerializeField] private GameObject SpinButton;
@@ -202,13 +202,12 @@ public class UIManager : MonoBehaviour
     private void TogglePopup(GameObject popup)
     {
         audioController.PlayUIButton();
-        audioController.PlayUIButton();
         if (popup == SettingsPopup_Object && (AutoSpinPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf))
         {
             AutoSpinPopup_Object.SetActive(false);
             VolumePopup_Object.SetActive(false);
             InfoPopup_Object.SetActive(false);
-            AutoSpinPopup2_Object.SetActive(false);
+            AutoStopPopup_Object.SetActive(false);
         }
         if (popup == AutoSpinPopup_Object && (SettingsPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf))
         {
@@ -221,7 +220,7 @@ public class UIManager : MonoBehaviour
             SettingsPopup_Object.SetActive(false);
             AutoSpinPopup_Object.SetActive(false);
             VolumePopup_Object.SetActive(false);
-            AutoSpinPopup2_Object.SetActive(false);
+            AutoStopPopup_Object.SetActive(false);
         }
         if (popup.activeSelf)
         {
@@ -396,7 +395,7 @@ public class UIManager : MonoBehaviour
             {
                 SettingsPopup_Object.SetActive(false);
                 AutoSpinPopup_Object.SetActive(false);
-                AutoSpinPopup2_Object.SetActive(false);
+                AutoStopPopup_Object.SetActive(false);
                 InfoPopup_Object.SetActive(false);
             });
         }
@@ -449,7 +448,7 @@ public class UIManager : MonoBehaviour
                 AutoSpintCountText.text = (autoSpinCount - 1).ToString();
                 if (rouletteController.betCount > 0)
                 {
-                    AutoSpinPopup2_Object.SetActive(true);
+                    AutoStopPopup_Object.SetActive(true);
                 }
                 rouletteController.StartCoroutine(rouletteController.TweenRoutine());
             });
@@ -459,7 +458,7 @@ public class UIManager : MonoBehaviour
     {
         audioController.PlayUIButton();
         autoSpinCount = 0;
-        AutoSpinPopup2_Object.SetActive(false);
+        AutoStopPopup_Object.SetActive(false);
         AutoSpinPopup_Object.SetActive(false);
     }
 

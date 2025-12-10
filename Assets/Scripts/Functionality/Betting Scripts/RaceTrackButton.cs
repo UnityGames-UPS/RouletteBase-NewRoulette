@@ -59,18 +59,28 @@ public class RaceTrackButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
         }
     }
 
-    private void NeighborBlurrImage()
+private void NeighborBlurrImage()
+{
+    for (int i = 0; i < betDef.numbers.Count; i++)
     {
-        // betDef.numbers;
-        for(int i =0 ; i < betDef.numbers.Count ; i++)
+        string num = betDef.numbers[i];
+        int n;
+
+        if (num == "00")
         {
-            string num = betDef.numbers[i];
-            int n = int.Parse(num);
-            if(num == "00")
-            {
-                n = 37;
-            }
-            highlightAreas.Add(raceTrackBlurrImage[n]);
+            n = 37;
         }
+        else if (!int.TryParse(num, out n))
+        {
+            continue;
+        }
+        if (n < 0 || n >= raceTrackBlurrImage.Length)
+        {
+            continue;
+        }
+
+        highlightAreas.Add(raceTrackBlurrImage[n]);
     }
+}
+
 }

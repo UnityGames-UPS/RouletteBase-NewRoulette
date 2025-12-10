@@ -47,7 +47,8 @@ public class HoverText : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         {
             btn.onClick.AddListener(() =>
             {
-               Invoke("RefreshHoverText", 1f);
+            //    Invoke("RefreshHoverText", 1f);
+            RefreshHoverText();
             });
         }
     }

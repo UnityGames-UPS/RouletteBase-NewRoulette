@@ -131,14 +131,15 @@ public class RouletteController : MonoBehaviour
             if (uiManager.autoSpinCount > 0)
             {
                 betManager.AutoBetComplete();
+                uiManager.AutoStopPopup_Object.SetActive(true);
             }
             else
             {
                 betManager.OnRoundComplete();
                 isSpinOn = false;
-                if (uiManager.AutoSpinPopup2_Object.activeSelf)
+                if (uiManager.AutoStopPopup_Object.activeSelf)
                 {
-                    uiManager.AutoSpinPopup2_Object.SetActive(false);
+                    uiManager.AutoStopPopup_Object.SetActive(false);
                     uiManager.AutoSpinPopup_Object.SetActive(true);
                 }
             }

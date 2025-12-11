@@ -115,7 +115,7 @@ public class RouletteController : MonoBehaviour
             }
             else
             {
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(1.5f);
             }
             // betManager.PlayWinningBetAnimation(socketManager.resultData.payload.winningBets);
             uiManager.ShowWinning(socketManager.resultData.payload.color, socketManager.resultData.payload.winningNumber, socketManager.resultData.payload.winAmount);
@@ -127,9 +127,21 @@ public class RouletteController : MonoBehaviour
             uiManager.ToggleButtons(true);
             socketManager.isResultdone = false;
             uiManager.autoSpinCount--;
-            uiManager.AutoSpintCountText.text = (uiManager.autoSpinCount-1).ToString();
+            uiManager.AutoSpintCountText.text = (uiManager.autoSpinCount - 1).ToString();
             if (uiManager.autoSpinCount > 0)
             {
+                if (betCount > socketManager.resultData.player.balance)
+                {
+                    betManager.OnRoundComplete();
+                    isSpinOn = false;
+                    if (uiManager.AutoStopPopup_Object.activeSelf)
+                    {
+                        uiManager.AutoStopPopup_Object.SetActive(false);
+                        uiManager.AutoSpinPopup_Object.SetActive(true);
+                    }
+                    uiManager.LowBalPopup();
+                    yield break;
+                }
                 betManager.AutoBetComplete();
                 uiManager.AutoStopPopup_Object.SetActive(true);
             }

@@ -202,20 +202,20 @@ public class UIManager : MonoBehaviour
     private void TogglePopup(GameObject popup)
     {
         audioController.PlayUIButton();
-        if (popup == SettingsPopup_Object && (AutoSpinPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf))
+        if (popup == SettingsPopup_Object && (AutoSpinPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf || AutoStopPopup_Object.activeSelf))
         {
             AutoSpinPopup_Object.SetActive(false);
             VolumePopup_Object.SetActive(false);
             InfoPopup_Object.SetActive(false);
             AutoStopPopup_Object.SetActive(false);
         }
-        if (popup == AutoSpinPopup_Object && (SettingsPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf))
+        if (popup == AutoSpinPopup_Object && (SettingsPopup_Object.activeSelf || VolumePopup_Object.activeSelf || InfoPopup_Object.activeSelf || AutoStopPopup_Object.activeSelf))
         {
             SettingsPopup_Object.SetActive(false);
             VolumePopup_Object.SetActive(false);
             InfoPopup_Object.SetActive(false);
         }
-        if (popup == InfoPopup_Object && (SettingsPopup_Object.activeSelf || VolumePopup_Object.activeSelf || AutoSpinPopup_Object.activeSelf))
+        if (popup == InfoPopup_Object && (SettingsPopup_Object.activeSelf || VolumePopup_Object.activeSelf || AutoSpinPopup_Object.activeSelf || AutoStopPopup_Object.activeSelf))
         {
             SettingsPopup_Object.SetActive(false);
             AutoSpinPopup_Object.SetActive(false);
@@ -689,12 +689,28 @@ public class UIManager : MonoBehaviour
         {
             TurboButton.SetActive(false);
             SpinButton.SetActive(true);
-            Ball.SetActive(true);
+            // Ball.SetActive(true);
+            StartCoroutine(BallVisuals(isOn));
         }
         else
         {
             SpinButton.SetActive(false);
             TurboButton.SetActive(true);
+            // Ball.SetActive(false);
+            StartCoroutine(BallVisuals(isOn));
+        }
+    }
+
+    private IEnumerator BallVisuals(bool isOn)
+    {
+        if (!isOn)
+        {
+            yield return new WaitUntil(() => BallManager.ballStopped);
+            Ball.SetActive(true);
+        }
+        else
+        {
+            yield return new WaitUntil(() => BallManager.ballStopped);
             Ball.SetActive(false);
         }
     }
@@ -770,30 +786,30 @@ public class UIManager : MonoBehaviour
                 FourPanel.SetActive(false);
                 ThreePanel.SetActive(true);
                 break;
-                case 4:
-                    ThreePanel.SetActive(false);
-                    FivePanel.SetActive(false);
-                    FourPanel.SetActive(true);
-                    break;
-                case 5:
-                    FourPanel.SetActive(false);
-                    SixPanel.SetActive(false);
-                    FivePanel.SetActive(true);
-                    break;
-                case 6:
-                    FivePanel.SetActive(false);
-                    SevenPanel.SetActive(false);
-                    SixPanel.SetActive(true);
-                    break;
-                case 7:
-                    SixPanel.SetActive(false);
-                    EightPanel.SetActive(false);
-                    SevenPanel.SetActive(true);
-                    break;
-                case 8:
-                    SevenPanel.SetActive(false);
-                    EightPanel.SetActive(true);
-                    break;
+            case 4:
+                ThreePanel.SetActive(false);
+                FivePanel.SetActive(false);
+                FourPanel.SetActive(true);
+                break;
+            case 5:
+                FourPanel.SetActive(false);
+                SixPanel.SetActive(false);
+                FivePanel.SetActive(true);
+                break;
+            case 6:
+                FivePanel.SetActive(false);
+                SevenPanel.SetActive(false);
+                SixPanel.SetActive(true);
+                break;
+            case 7:
+                SixPanel.SetActive(false);
+                EightPanel.SetActive(false);
+                SevenPanel.SetActive(true);
+                break;
+            case 8:
+                SevenPanel.SetActive(false);
+                EightPanel.SetActive(true);
+                break;
         }
     }
 

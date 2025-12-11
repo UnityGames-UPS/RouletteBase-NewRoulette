@@ -67,11 +67,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject OnePanel;
     [SerializeField] private GameObject TwoPanel;
     [SerializeField] private GameObject ThreePanel;
-    // [SerializeField] private GameObject FourPanel;
-    // [SerializeField] private GameObject FivePanel;
-    // [SerializeField] private GameObject SixPanel;
-    // [SerializeField] private GameObject SevenPanel;
-    // [SerializeField] private GameObject EightPanel;
+    [SerializeField] private GameObject FourPanel;
+    [SerializeField] private GameObject FivePanel;
+    [SerializeField] private GameObject SixPanel;
+    [SerializeField] private GameObject SevenPanel;
+    [SerializeField] private GameObject EightPanel;
     [SerializeField] private TMP_Text raceTrackNumber_Text;
 
     [Header("Sound Panel")]
@@ -739,7 +739,7 @@ public class UIManager : MonoBehaviour
     private void RaceTrackBets(bool plus)
     {
 
-        if (plus && raceTrackNumber < 3)
+        if (plus && raceTrackNumber < 8)
         {
             raceTrackNumber++;
         }
@@ -767,33 +767,33 @@ public class UIManager : MonoBehaviour
                 break;
             case 3:
                 TwoPanel.SetActive(false);
-                // FourPanel.SetActive(false);
+                FourPanel.SetActive(false);
                 ThreePanel.SetActive(true);
                 break;
-                // case 4:
-                //     ThreePanel.SetActive(false);
-                //     FivePanel.SetActive(false);
-                //     FourPanel.SetActive(true);
-                //     break;
-                // case 5:
-                //     FourPanel.SetActive(false);
-                //     SixPanel.SetActive(false);
-                //     FivePanel.SetActive(true);
-                //     break;
-                // case 6:
-                //     FivePanel.SetActive(false);
-                //     SevenPanel.SetActive(false);
-                //     SixPanel.SetActive(true);
-                //     break;
-                // case 7:
-                //     SixPanel.SetActive(false);
-                //     EightPanel.SetActive(false);
-                //     SevenPanel.SetActive(true);
-                //     break;
-                // case 8:
-                //     SevenPanel.SetActive(false);
-                //     EightPanel.SetActive(true);
-                //     break;
+                case 4:
+                    ThreePanel.SetActive(false);
+                    FivePanel.SetActive(false);
+                    FourPanel.SetActive(true);
+                    break;
+                case 5:
+                    FourPanel.SetActive(false);
+                    SixPanel.SetActive(false);
+                    FivePanel.SetActive(true);
+                    break;
+                case 6:
+                    FivePanel.SetActive(false);
+                    SevenPanel.SetActive(false);
+                    SixPanel.SetActive(true);
+                    break;
+                case 7:
+                    SixPanel.SetActive(false);
+                    EightPanel.SetActive(false);
+                    SevenPanel.SetActive(true);
+                    break;
+                case 8:
+                    SevenPanel.SetActive(false);
+                    EightPanel.SetActive(true);
+                    break;
         }
     }
 

@@ -42,7 +42,7 @@ internal class AudioController : MonoBehaviour
 
     internal void PlayBallRolling()
     {
-        PlayGame(ballRolling, true);
+        PlayGame(ballRolling, false);
     }
 
     internal void PlayBallStop()

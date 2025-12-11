@@ -187,7 +187,7 @@ public class BetManager : MonoBehaviour
         audioController.PlayUIButton();
         if (betHistory.Count == 0)
             return;
-        if (socketManager.initialData.bets.limits.max < (rouletteController.betCount*2))
+        if (socketManager.initialData.bets.limits.max < (rouletteController.betCount * 2))
         {
             uIManager.BetLimitPopup();
             return;
@@ -410,7 +410,7 @@ public class BetManager : MonoBehaviour
             return;
         }
 
-        string[] multiTypes = { "corner", "split", "street", "top_line", "six_line"};
+        string[] multiTypes = { "corner", "split", "street", "top_line", "six_line" };
 
         foreach (var multi in multiTypes)
         {
@@ -439,7 +439,24 @@ public class BetManager : MonoBehaviour
     {
         ParseBetKey(betKey, out string type, out List<string> numberStrings);
 
-        betPlacement.RemoveAll(bp => bp.type == type);
+        string[] multiBets = { "split", "street", "corner", "six_line", "straight_up" };
+
+        if (multiBets.Contains(type))
+        {
+            betPlacement.RemoveAll(bp =>
+            {
+                if (bp == null) return false;
+                if (bp.type != type) return false;
+                if (bp.numbers == null) return false;
+
+                var storedNums = bp.numbers.Select(o => o.ToString()).ToList();
+                return storedNums.SequenceEqual(numberStrings);
+            });
+        }
+        else
+        {
+            betPlacement.RemoveAll(bp => bp.type == type);
+        }
 
         float amt = amountOnBet.ContainsKey(betKey) ? amountOnBet[betKey] : 0f;
         if (amt <= 0f) return;

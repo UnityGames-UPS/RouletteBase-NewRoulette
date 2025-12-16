@@ -91,7 +91,15 @@ public class BetManager : MonoBehaviour
 
     private void SpawnChipStack(string betKey, RectTransform anchor, List<float> chips)
     {
-        Vector2 basePos = chipRoot.InverseTransformPoint(anchor.transform.position);
+        // Vector2 basePos = chipRoot.InverseTransformPoint(anchor.transform.position);
+        Vector2 basePos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            chipRoot,
+            RectTransformUtility.WorldToScreenPoint(null, anchor.position),
+            null,
+            out basePos
+        );
+
         float stackOffset = 3f;
 
         for (int i = 0; i < chips.Count; i++)
@@ -115,7 +123,12 @@ public class BetManager : MonoBehaviour
 
             chipRT.DOAnchorPos(finalPos, 0.25f).SetEase(Ease.OutBack);
             chipRT.DOScale(0.7f, 0.2f);
-            chipRT.DORotate(new Vector3(0, 0, Random.Range(-7f, 7f)), 0.3f);
+            // chipRT.DORotate(new Vector3(0, 0, Random.Range(-7f, 7f)), 0.3f);
+            chipRT.localRotation = Quaternion.identity;
+            chipRT.DOLocalRotate(
+                new Vector3(0, 0, Random.Range(-5f, 5f)),
+                0.3f
+            );
 
             placedChips[betKey].Add(chip);
         }

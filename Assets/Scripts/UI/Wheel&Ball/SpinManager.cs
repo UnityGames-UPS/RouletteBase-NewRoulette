@@ -48,25 +48,28 @@ public class SpinManager : MonoBehaviour
     {
         parentDone = false;
         ballScript.ballStopped = false;
-        if (Ball_Transform) Ball_Transform.SetParent(Roulette_BallContainer);
+        if (Ball_Transform) Ball_Transform.SetParent(Roulette_BallContainer );
         if (Ball_Transform) Ball_Transform.localPosition = initialBallPosition;
         audioController.PlayBallRolling();
         if (Roulette_OuterCircle) Roulette_OuterCircle.localEulerAngles = new Vector3(0, 0, 359);
-        if (Roulette_OuterCircle) OuterRouletteMovement = Roulette_OuterCircle.DORotate(new Vector3(0, 0, 0), 2, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
-            // .OnUpdate(() =>
-            // {
-            //     if (parentDone){ 
-            //     Ball_Transform.localRotation = Quaternion.Inverse(Roulette_OuterCircle.localRotation);
-            //     }
-            // });
+        // if (Roulette_OuterCircle) OuterRouletteMovement = Roulette_OuterCircle.DORotate(new Vector3(0, 0, 0), 2, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
+        if (Roulette_OuterCircle) OuterRouletteMovement = Roulette_OuterCircle.DOLocalRotate(new Vector3(0, 0, -360), 2f, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1);
+        // .OnUpdate(() =>
+        // {
+        //     if (parentDone){ 
+        //     Ball_Transform.localRotation = Quaternion.Inverse(Roulette_OuterCircle.localRotation);
+        //     }
+        // });
+
         if (Roulette_BallContainer) Roulette_BallContainer.localEulerAngles = new Vector3(0, 0, 0);
-        if (Roulette_BallContainer) ballMovement = Roulette_BallContainer.DORotate(new Vector3(0, 0, 359), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1)
+        // if (Roulette_BallContainer) ballMovement = Roulette_BallContainer.DORotate(new Vector3(0, 0, 359), 1, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1)
+        if (Roulette_BallContainer) ballMovement = Roulette_BallContainer.DOLocalRotate(new Vector3(0, 0, 360), 1f, RotateMode.FastBeyond360).SetEase(Ease.Linear).SetLoops(-1)
             .OnUpdate(() =>
             {
                 Ball_Transform.localRotation = Quaternion.Inverse(Roulette_BallContainer.localRotation);
             });
 
-        if( num == 00 ) numberAnnounced = 37;
+        if (num == 00) numberAnnounced = 37;
         else numberAnnounced = num;
         Stopper = Instantiate(Stopper_pref, BallStopPoint[numberAnnounced]);
         Stopper.transform.localPosition = Vector2.zero;

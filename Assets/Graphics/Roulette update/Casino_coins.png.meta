@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9e8df91ff08e645a8870d20fc105e0c5
+guid: 6c8503e5a288c43019805ab163e6d2f1
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,34 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Casino coins_0
+      name: Casino_coins_0
       rect:
         serializedVersion: 2
-        x: 58
-        y: 57
-        width: 397
-        height: 398
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f6e946457e8e24ec8a8430fd1ed7a4d7
-      internalID: -1652064691
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Casino coins_1
-      rect:
-        serializedVersion: 2
-        x: 571
+        x: 1081
         y: 57
         width: 396
-        height: 398
+        height: 399
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9766c3745c7d9400996fc312862722f9
-      internalID: 230155725
+      spriteID: 3bc3e70ddeec2496ca97a7702cf000b9
+      internalID: -727271996
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Casino coins_2
+      name: Casino_coins_1
       rect:
         serializedVersion: 2
-        x: 1082
-        y: 57
-        width: 396
-        height: 398
+        x: 1596
+        y: 56
+        width: 395
+        height: 401
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,41 +145,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d369fd2c77c474e7f80ee80333dec8fb
-      internalID: -1638656138
+      spriteID: f065b9dbd8b85403183bbb2e182dc01a
+      internalID: -954347638
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Casino coins_3
-      rect:
-        serializedVersion: 2
-        x: 1594
-        y: 57
-        width: 396
-        height: 398
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9140677cdd0984a6488175c606d33c7c
-      internalID: 1776495596
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Casino coins_4
+      name: Casino_coins_2
       rect:
         serializedVersion: 2
         x: 2105
-        y: 57
-        width: 396
-        height: 398
+        y: 58
+        width: 400
+        height: 396
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,20 +166,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 67361b4adadc542a7a70557061395fb8
-      internalID: 35614918
+      spriteID: ccd8fdf5ca58343c1944d7b230ce656e
+      internalID: -2025511506
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Casino coins_5
+      name: Casino_coins_5
       rect:
         serializedVersion: 2
-        x: 2617
+        x: 4667
         y: 57
-        width: 398
-        height: 398
+        width: 394
+        height: 399
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,103 +187,40 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2f7a64d1d29254cd1ba7a4af18706657
-      internalID: 1666974723
+      spriteID: bd02a79d649514ae0a3ae3ad92e9c125
+      internalID: -311146424
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Casino coins_6
-      rect:
-        serializedVersion: 2
-        x: 3131
-        y: 57
-        width: 396
-        height: 398
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 1f8529afeef6243ba9de7f648fe9813e
-      internalID: -646459855
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Casino coins_7
-      rect:
-        serializedVersion: 2
-        x: 3642
-        y: 57
-        width: 396
-        height: 398
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 83452341a37d7425e8bee4d01e192ae2
-      internalID: 1461200773
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Casino coins_8
-      rect:
-        serializedVersion: 2
-        x: 4154
-        y: 57
-        width: 396
-        height: 398
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b68ea227a367e452dbee0fc57263dbec
-      internalID: 1986281179
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Casino coins_9
-      rect:
-        serializedVersion: 2
-        x: 4665
-        y: 57
-        width: 396
-        height: 398
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 989f565f59abf4f95baba9844280d181
-      internalID: 1634331253
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Casino coins_10
+      name: Casino_coins_6
       rect:
         serializedVersion: 2
         x: 5177
+        y: 56
+        width: 393
+        height: 400
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1d5fb587fecc46f69b9786f5bdf65b8
+      internalID: 1543502101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Casino_coins_7
+      rect:
+        serializedVersion: 2
+        x: 59
         y: 57
-        width: 397
+        width: 396
         height: 398
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -334,8 +229,113 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9183801ee1d7c4f81ab5bc65db2a76e1
-      internalID: -393531493
+      spriteID: 9d1837ac1ba624b5a87f768ea7672405
+      internalID: 1559082284
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Casino_coins_8
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 59
+        width: 396
+        height: 394
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 795891cfe0fcb497aaa6643329546ce9
+      internalID: -653758371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Casino_coins_9
+      rect:
+        serializedVersion: 2
+        x: 2619
+        y: 56
+        width: 394
+        height: 398
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 620a2b0b881b042a1a5b40b54422fc4b
+      internalID: 541726599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Casino_coins_10
+      rect:
+        serializedVersion: 2
+        x: 3131
+        y: 58
+        width: 396
+        height: 395
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dfb5848f899e34624b86123ed2cb966b
+      internalID: -1210250488
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Casino_coins_11
+      rect:
+        serializedVersion: 2
+        x: 3643
+        y: 56
+        width: 396
+        height: 397
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 289ba2b5a5e354798ade8b9d5dd79221
+      internalID: -1517594467
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Casino_coins_3
+      rect:
+        serializedVersion: 2
+        x: 4156
+        y: 57
+        width: 394
+        height: 398
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 03fe68406519d40ea8fdf7b27a1a73a9
+      internalID: -182517325
       vertices: []
       indices: 
       edges: []
@@ -351,17 +351,21 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Casino coins_0: -1652064691
-      Casino coins_1: 230155725
-      Casino coins_10: -393531493
-      Casino coins_2: -1638656138
-      Casino coins_3: 1776495596
-      Casino coins_4: 35614918
-      Casino coins_5: 1666974723
-      Casino coins_6: -646459855
-      Casino coins_7: 1461200773
-      Casino coins_8: 1986281179
-      Casino coins_9: 1634331253
+      Casino_coins_0: -727271996
+      Casino_coins_1: -954347638
+      Casino_coins_10: -1210250488
+      Casino_coins_11: -1517594467
+      Casino_coins_12: -1349341839
+      Casino_coins_13: -1194301992
+      Casino_coins_14: 151151171
+      Casino_coins_2: -2025511506
+      Casino_coins_3: -182517325
+      Casino_coins_4: -1765799838
+      Casino_coins_5: -311146424
+      Casino_coins_6: 1543502101
+      Casino_coins_7: 1559082284
+      Casino_coins_8: -653758371
+      Casino_coins_9: 541726599
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

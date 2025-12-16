@@ -62,15 +62,27 @@ public class ChipSelector : MonoBehaviour
 
         Vector2 localPos;
 
+        // RectTransformUtility.ScreenPointToLocalPointInRectangle(
+        //     cursorChipImage.canvas.transform as RectTransform,
+        //     Input.mousePosition,
+        //     cursorChipImage.canvas.worldCamera,
+        //     out localPos
+        // );
+
+        // float offsetY = 10f; 
+        // cursorChipImage.rectTransform.anchoredPosition = localPos + new Vector2(0, offsetY);
+
+        RectTransform wrapper = cursorChipImage.transform.parent as RectTransform;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            cursorChipImage.canvas.transform as RectTransform,
+            wrapper,
             Input.mousePosition,
             cursorChipImage.canvas.worldCamera,
             out localPos
         );
 
-        float offsetY = 10f; 
-        cursorChipImage.rectTransform.anchoredPosition = localPos + new Vector2(0, offsetY);
+        cursorChipImage.rectTransform.anchoredPosition = localPos + new Vector2(0, 10f);
+
+
     }
 
     internal ChipButton GetChipByValue(float value)

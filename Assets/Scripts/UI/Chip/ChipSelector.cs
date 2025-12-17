@@ -1,15 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using DG.Tweening;
 
 public class ChipSelector : MonoBehaviour
 {
     [SerializeField] private List<ChipButton> chips = new List<ChipButton>();
-    internal ChipButton selectedChip;
     [SerializeField] private Image cursorChipImage;
-    private bool chipSelected = false;
 
+    internal ChipButton selectedChip;
 
     private void Start()
     {
@@ -17,13 +15,22 @@ public class ChipSelector : MonoBehaviour
         {
             chip.button.onClick.AddListener(() => OnChipSelected(chip));
         }
-        selectedChip = chips[2];
-        selectedChip.SetSelected(true);
-        chipSelected = true;
-        cursorChipImage.sprite = chips[2].chipImage.sprite;
+
+        // Default selected chip
+        if (chips.Count > 0)
+        {
+            SelectChip(chips[2]);
+        }
+
+        Hide();
     }
 
     private void OnChipSelected(ChipButton chip)
+    {
+        SelectChip(chip);
+    }
+
+    private void SelectChip(ChipButton chip)
     {
         if (selectedChip != null)
             selectedChip.SetSelected(false);
@@ -31,59 +38,26 @@ public class ChipSelector : MonoBehaviour
         selectedChip = chip;
         selectedChip.SetSelected(true);
 
-        chipSelected = true;
-
         cursorChipImage.sprite = chip.chipImage.sprite;
-
-        Debug.Log("Selected Chip: " + GetSelectedChipValue());
     }
-
 
     internal float GetSelectedChipValue()
     {
-        return selectedChip != null ? selectedChip.value : 0;
+        return selectedChip != null ? selectedChip.value : 0f;
     }
 
-    internal void ShowCursorChip()
+    // 🔹 Called from NumberButton pointer events
+    internal void ShowAt(Vector2 localPos)
     {
-        if (chipSelected)
-            cursorChipImage.gameObject.SetActive(true);
+        cursorChipImage.gameObject.SetActive(true);
+        cursorChipImage.rectTransform.anchoredPosition = localPos + Vector2.up * 10f;
     }
 
-    internal void HideCursorChip()
+    internal void Hide()
     {
         cursorChipImage.gameObject.SetActive(false);
     }
 
-    private void Update()
-    {
-        if (cursorChipImage == null || !cursorChipImage.gameObject.activeSelf)
-            return;
-
-        Vector2 localPos;
-
-        // RectTransformUtility.ScreenPointToLocalPointInRectangle(
-        //     cursorChipImage.canvas.transform as RectTransform,
-        //     Input.mousePosition,
-        //     cursorChipImage.canvas.worldCamera,
-        //     out localPos
-        // );
-
-        // float offsetY = 10f; 
-        // cursorChipImage.rectTransform.anchoredPosition = localPos + new Vector2(0, offsetY);
-
-        RectTransform wrapper = cursorChipImage.transform.parent as RectTransform;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            wrapper,
-            Input.mousePosition,
-            cursorChipImage.canvas.worldCamera,
-            out localPos
-        );
-
-        cursorChipImage.rectTransform.anchoredPosition = localPos + new Vector2(0, 10f);
-
-
-    }
 
     internal ChipButton GetChipByValue(float value)
     {

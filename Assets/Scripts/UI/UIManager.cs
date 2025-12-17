@@ -293,12 +293,12 @@ public class UIManager : MonoBehaviour
         UpdateUI();
         Debug.Log("UI Updated");
     }
-
     private void UpdateUI()
     {
         balanceText.text = socketManager.resultData.player.balance.ToString("F2");
         totalWiningText.text = socketManager.resultData.payload.winAmount.ToString("F2");
     }
+
     internal void UpdateWinNumberHistoryUI(string color, int number)
     {
         string num = number.ToString();

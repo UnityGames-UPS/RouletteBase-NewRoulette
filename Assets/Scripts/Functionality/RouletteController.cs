@@ -106,7 +106,6 @@ public class RouletteController : MonoBehaviour
             Debug.Log(bet);
             yield return new WaitUntil(() => socketManager.isResultdone);
             UpdateBalance();
-            uiManager.StartCoroutine(uiManager.UpdateResultUI());
             if (uiManager.turboSpin == false)
             {
                 yield return new WaitForSeconds(0.5f);
@@ -117,6 +116,7 @@ public class RouletteController : MonoBehaviour
             {
                 yield return new WaitForSeconds(1.5f);
             }
+            uiManager.StartCoroutine(uiManager.UpdateResultUI());
             // betManager.PlayWinningBetAnimation(socketManager.resultData.payload.winningBets);
             uiManager.ShowWinning(socketManager.resultData.payload.color, socketManager.resultData.payload.winningNumber, socketManager.resultData.payload.winAmount);
             yield return new WaitUntil(() => !uiManager.isWinPopupActive);

@@ -112,6 +112,7 @@ public class UIManager : MonoBehaviour
     [Header("Lists")]
     [SerializeField] private List<Button> DisableButtons_DuringSpin;
     [SerializeField] private List<GameObject> DisableGameObject_DuringSpin;
+    [SerializeField] private List<GameObject> DisableBlurrImages_DuringSpin;
     [SerializeField] private List<Button> CloseButtons;
     [SerializeField] private List<Button> AutoSpinOptionButtons;
     [SerializeField] private RectTransform[] WiningImagePositions;
@@ -384,6 +385,14 @@ public class UIManager : MonoBehaviour
         foreach (GameObject GO in DisableGameObject_DuringSpin)
         {
             GO.SetActive(status);
+        }
+    }
+
+        internal void CloseBlurrImage()
+    {
+        foreach (GameObject GO in DisableBlurrImages_DuringSpin)
+        {
+            GO.SetActive(false);
         }
     }
 

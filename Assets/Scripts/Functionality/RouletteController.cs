@@ -99,6 +99,7 @@ public class RouletteController : MonoBehaviour
             isSpinOn = true;
             uiManager.winNumberAnimation = false;
             uiManager.ToggleButtons(false);
+            uiManager.CloseBlurrImage();
             uiManager.Closepopups();
             Debug.Log("Spinning Started");
             Debug.Log("Sending Data");

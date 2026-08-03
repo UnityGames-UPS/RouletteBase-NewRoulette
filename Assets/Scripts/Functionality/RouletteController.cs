@@ -164,6 +164,12 @@ public class RouletteController : MonoBehaviour
         uiManager.totalBetText.text = betCount.ToString();
     }
 
+    internal void CheckLowBalance()
+    {
+        if (betCount > socketManager.playerdata.balance)
+            uiManager.LowBalPopup();
+    }
+
     internal void UpdateBalance()
     {
         double currBal = socketManager.playerdata.balance - betCount;

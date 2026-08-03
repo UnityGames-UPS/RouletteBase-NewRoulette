@@ -7,6 +7,17 @@ public class JSFunctCalls : MonoBehaviour
 
   [DllImport("__Internal")] private static extern void SendPostMessage(string message);
 
+  [DllImport("__Internal")] private static extern void RegisterVisibilityChangeListener(string gameObjectName);
+
+  internal void RegisterVisibilityListener(string gameObjectName)
+  {
+#if UNITY_WEBGL && !UNITY_EDITOR
+    RegisterVisibilityChangeListener(gameObjectName);
+#else
+    Debug.Log("[JS] Visibility listener not registered (editor mode)");
+#endif
+  }
+
   void OnEnable()
   {
 #if UNITY_WEBGL && !UNITY_EDITOR

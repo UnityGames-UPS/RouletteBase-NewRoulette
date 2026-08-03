@@ -123,6 +123,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private BallScript BallManager;
     [SerializeField] private BetManager betManager;
     [SerializeField] private RouletteController rouletteController;
+    [SerializeField] private JSFunctCalls jsFunctCalls;
 
     [Header("Other Stuff")]
     internal bool isWinPopupActive = false;
@@ -134,6 +135,24 @@ public class UIManager : MonoBehaviour
     private float lastMusicVolume = 1f;
     private float lastSoundVolume = 1f;
     private int raceTrackNumber = 0;
+
+    private void Awake()
+    {
+        jsFunctCalls?.RegisterVisibilityListener(gameObject.name);
+    }
+
+    public void OnFocusChanged(string value)
+    {
+        bool focused = value == "1";
+        audioController?.SetMuteAll(!focused);
+        socketManager?.HandleFocusChange(focused);
+    }
+
+    internal void UpdateBalanceDisplay(double newBalance)
+    {
+        if (balanceText) balanceText.text = newBalance.ToString("F2");
+        rouletteController?.CheckLowBalance();
+    }
 
     private void Start()
     {

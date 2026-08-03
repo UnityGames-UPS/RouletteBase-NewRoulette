@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 internal class AudioController : MonoBehaviour
 {
@@ -91,11 +92,33 @@ internal class AudioController : MonoBehaviour
         uiSource.PlayOneShot(navigation);
     }
 
-    internal void MuteAll(bool mute)
+    private bool isForceMuted = false;
+    private readonly Dictionary<AudioSource, bool> preFocusMuteState = new Dictionary<AudioSource, bool>();
+
+    internal void SetMuteAll(bool forceMute)
     {
-        bgSource.mute = mute;
-        gameSource.mute = mute;
-        uiSource.mute = mute;
+        if (forceMute == isForceMuted) return;
+        isForceMuted = forceMute;
+
+        var sources = new[] { bgSource, gameSource, uiSource };
+        foreach (var source in sources)
+        {
+            if (source == null) continue;
+            if (forceMute)
+            {
+                preFocusMuteState[source] = source.mute;
+                source.mute = true;
+            }
+            else
+            {
+                source.mute = preFocusMuteState.TryGetValue(source, out bool prevMuted) ? prevMuted : source.mute;
+            }
+        }
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        SetMuteAll(!focus);
     }
 
     internal void SetBGVolume(float value)
@@ -110,11 +133,6 @@ internal class AudioController : MonoBehaviour
             bgSource.clip = bgMusic;
             bgSource.loop = true;
             bgSource.Play();
-        }
-
-        if (value <= 0f)
-        {
-            bgSource.Pause();
         }
     }
 

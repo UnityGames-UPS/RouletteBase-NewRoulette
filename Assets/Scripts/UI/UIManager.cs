@@ -92,6 +92,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button EmptyBetButton;
     [SerializeField] private Button QuitYesButton;
     [SerializeField] private Button QuitNoButton;
+    [SerializeField] private Button DisconnectExitButton;
 
     [Header("Win Popup")]
     [SerializeField] private GameObject WinNumberPopup_Object;
@@ -201,6 +202,8 @@ public class UIManager : MonoBehaviour
         {
             CallOnExitFunction();
         });
+        if (DisconnectExitButton) DisconnectExitButton.onClick.RemoveAllListeners();
+        if (DisconnectExitButton) DisconnectExitButton.onClick.AddListener(CallOnExitFunction);
         if (QuitNoButton) QuitNoButton.onClick.RemoveAllListeners();
         if (QuitNoButton) QuitNoButton.onClick.AddListener(delegate
         {

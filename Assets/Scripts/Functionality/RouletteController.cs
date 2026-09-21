@@ -105,8 +105,8 @@ public class RouletteController : MonoBehaviour
             Debug.Log("Sending Data");
             socketManager.AccumulateResult(bet);
             Debug.Log(bet);
-            yield return new WaitUntil(() => socketManager.isResultdone);
             UpdateBalance();
+            yield return new WaitUntil(() => socketManager.isResultdone);
             if (uiManager.turboSpin == false)
             {
                 yield return new WaitForSeconds(0.5f);

@@ -318,7 +318,13 @@ public class UIManager : MonoBehaviour
     private void SpawnChipButtons(List<double> availableValues)
     {
         foreach (Transform child in ChipParent.transform)
+        {
+            Button oldButton = child.GetComponent<Button>();
+            if (oldButton != null)
+                DisableButtons_DuringSpin.Remove(oldButton);
+
             Destroy(child.gameObject);
+        }
 
         List<ChipButton> spawned = new List<ChipButton>();
 
@@ -334,6 +340,9 @@ public class UIManager : MonoBehaviour
             TMP_Text label = instance.GetComponentInChildren<TMP_Text>();
             if (label != null)
                 label.text = ChipFormatUtility.Format(value);
+
+            if (chipButton.button != null)
+                DisableButtons_DuringSpin.Add(chipButton.button);
 
             spawned.Add(chipButton);
         }
@@ -433,7 +442,8 @@ public class UIManager : MonoBehaviour
     {
         foreach (Button btn in DisableButtons_DuringSpin)
         {
-            btn.interactable = status;
+            if (btn != null)
+                btn.interactable = status;
         }
         foreach (GameObject GO in DisableGameObject_DuringSpin)
         {

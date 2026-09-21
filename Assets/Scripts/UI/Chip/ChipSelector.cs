@@ -13,6 +13,9 @@ public class ChipSelector : MonoBehaviour
 
     private void Start()
     {
+        if (chips.Count == 0)
+            return;
+
         foreach (var chip in chips)
         {
             chip.button.onClick.AddListener(() => OnChipSelected(chip));
@@ -21,6 +24,20 @@ public class ChipSelector : MonoBehaviour
         selectedChip.SetSelected(true);
         chipSelected = true;
         cursorChipImage.sprite = chips[2].chipImage.sprite;
+    }
+
+    internal void SetChips(List<ChipButton> newChips)
+    {
+        chips = newChips;
+
+        foreach (var chip in chips)
+            chip.button.onClick.AddListener(() => OnChipSelected(chip));
+
+        if (chips.Count == 0)
+            return;
+
+        int defaultIndex = Mathf.Min(2, chips.Count - 1);
+        OnChipSelected(chips[defaultIndex]);
     }
 
     private void OnChipSelected(ChipButton chip)

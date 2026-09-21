@@ -28,6 +28,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TMP_Text[] coldNumberTexts;
     [SerializeField] private TMP_Text[] coldCountTexts;
 
+    [Header("Chips")]
+    [SerializeField] private List<GameObject> chipPrefabs;
+    [SerializeField] private GameObject ChipParent;
 
     [Header("Buttons")]
     [SerializeField] private Button DoubleBetButton;
@@ -123,6 +126,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private AudioController audioController;
     [SerializeField] private BallScript BallManager;
     [SerializeField] private BetManager betManager;
+    [SerializeField] private ChipSelector chipSelector;
     [SerializeField] private RouletteController rouletteController;
     [SerializeField] private JSFunctCalls jsFunctCalls;
 
@@ -308,6 +312,33 @@ public class UIManager : MonoBehaviour
         balanceText.text = socketManager.playerdata.balance.ToString("F2");
         min_Text.text = socketManager.initialData.bets.limits.min.ToString();
         max_Text.text = socketManager.initialData.bets.limits.max.ToString();
+        SpawnChipButtons(socketManager.initialData.bets.available);
+    }
+
+    private void SpawnChipButtons(List<double> availableValues)
+    {
+        foreach (Transform child in ChipParent.transform)
+            Destroy(child.gameObject);
+
+        List<ChipButton> spawned = new List<ChipButton>();
+
+        for (int i = 0; i < availableValues.Count; i++)
+        {
+            double value = availableValues[i];
+            GameObject prefab = chipPrefabs[i % chipPrefabs.Count];
+
+            GameObject instance = Instantiate(prefab, ChipParent.transform);
+            ChipButton chipButton = instance.GetComponent<ChipButton>();
+            chipButton.value = (float)value;
+
+            TMP_Text label = instance.GetComponentInChildren<TMP_Text>();
+            if (label != null)
+                label.text = ChipFormatUtility.Format(value);
+
+            spawned.Add(chipButton);
+        }
+
+        chipSelector.SetChips(spawned);
     }
     internal IEnumerator UpdateResultUI()
     {
@@ -410,7 +441,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-        internal void CloseBlurrImage()
+    internal void CloseBlurrImage()
     {
         foreach (GameObject GO in DisableBlurrImages_DuringSpin)
         {

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using System.Linq;
+using TMPro;
 
 public class BetManager : MonoBehaviour
 {
@@ -114,6 +115,10 @@ public class BetManager : MonoBehaviour
             }
 
             GameObject chip = Instantiate(prefabChip.ChipPreab, chipRoot);
+            TMP_Text chipLabel = chip.GetComponentInChildren<TMP_Text>();
+            if (chipLabel != null)
+                chipLabel.text = ChipFormatUtility.Format(value);
+
             RectTransform chipRT = chip.GetComponent<RectTransform>();
 
             Vector2 finalPos = new Vector2(basePos.x, basePos.y + i * stackOffset);
